@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CREW ARCHIVES — Skate and Destroy</title>
+<meta name="description" content="Revista local de skate. Videos, edits y partes completas de la crew.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="CREW ARCHIVES — Skate and Destroy">
+<meta property="og:description" content="Revista local de skate. Videos, edits y partes completas de la crew.">
+<meta property="og:image" content="https://crew-archives-vercel-3.vercel.app/crew-foto.jpg">
+<meta property="og:image:width" content="889">
+<meta property="og:image:height" content="490">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://crew-archives-vercel-3.vercel.app/crew-foto.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Permanent+Marker&family=Archivo:ital,wdth,wght@1,125,900&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/htm@3.1.1/dist/htm.js"></script>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#111;--red:#e63946;--yel:#f1c40f}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:#111;color:#fff;font-family:Impact,'Arial Narrow',sans-serif;margin:0}
+.anton{font-family:'Anton',Impact,sans-serif;letter-spacing:.02em}
+.marker{font-family:'Permanent Marker','Comic Sans MS',cursive}
+.body{font-family:Arial,Helvetica,sans-serif}
+.hard{box-shadow:5px 5px 0 #000}
+.hard-r{box-shadow:5px 5px 0 var(--red)}
+.grain{background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.04) 0 2px,transparent 2px 6px)}
+.tape{transform:rotate(-3deg)}
+.logo{font-family:'Archivo','Arial Black',Impact,sans-serif;font-style:italic;font-weight:900;font-stretch:125%;font-variation-settings:'wdth' 125;letter-spacing:-.03em;line-height:.95;text-transform:uppercase;font-size:min(54px,calc((100vw - 92px)/11.6));width:max-content;white-space:nowrap;background:repeating-linear-gradient(0deg,#fff 0 3px,#c9c9c9 3px 4px);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(2px 2px 0 #000)}
+.logo .amp{background:repeating-linear-gradient(0deg,#e63946 0 3px,#a8202c 3px 4px);-webkit-background-clip:text;background-clip:text;color:transparent;font-size:1.05em;margin:0 -.04em}
+.tag{display:inline-block;background:#f1c40f;color:#111;font:700 clamp(9px,2.2vw,12px)/1 'Courier New',monospace;letter-spacing:.12em;padding:4px 8px;border:2px solid #111;text-transform:uppercase;margin-top:6px;box-shadow:2px 2px 0 #000}
+@media(min-width:768px){.logo{font-size:min(54px,calc((100vw - 112px)/11.6))}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const {useState,useEffect,useMemo} = React;
+const html = htm.bind(React.createElement);
+
+/* ---------- DATA ---------- */
+const SKATERS = [
+ {id:'raspu',ig:'',name:'Raspu',nick:'EL PÁJARO',stance:'Regular',years:9,spot:'Skatepark Los Ángeles, Ricardo Vicuña',hue:350,
+  favs:['Kickflip back lip','Frontside 180 nollie','Tre flip'],setup:{deck:'8.25" Maple 7-ply',trucks:'Independent 149',wheels:'54mm 99A',bearings:'Bones Reds'}},
+ {id:'boris',ig:'',name:'Boris',nick:'EL ZORRO',stance:'Goofy',years:6,spot:'Parque Ecuador',hue:45,
+  favs:['Backside tailslide','Varial flip','Manual a nollie'],setup:{deck:'8.0" Maple 7-ply',trucks:'Thunder 147',wheels:'52mm 101A',bearings:'Swiss'}},
+ {id:'droppa',ig:'',name:'Droppa',nick:'HUESOS',stance:'Regular',years:12,spot:'Costanera Sur',hue:200,
+  favs:['Hardflip','Switch bs 180','Noseslide largo'],setup:{deck:'8.5" Maple 8-ply',trucks:'Venture 5.6',wheels:'56mm 99A',bearings:'Bronson G3'}},
+ {id:'diego',ig:'',name:'Diego',nick:'EL TIGRE',stance:'Goofy',years:4,spot:'Skatepark Los Ángeles, Ricardo Vicuña',hue:280,
+  favs:['Fs boardslide','Ollie al gap','Bs bigspin'],setup:{deck:'7.875" Maple 7-ply',trucks:'Independent 139',wheels:'53mm 100A',bearings:'Bones Swiss'}}
+];
+const VIDEOS = [
+ {id:1,ig:'',img:'crew-foto.jpg',sk:'raspu',title:'KICKFLIP BACK LIP AL RIEL DE LA MUERTE',spot:'Skatepark Los Ángeles, Ricardo Vicuña',filmer:'Cote Cam',date:'03 OCT 2026',dur:'2:41',likes:482,tag:'CREW',desc:'Raspu se come la plaza entera: rieles, gaps y un back lip que todavía retumba en el barrio. Filmado en fisheye, sin cortes ni piedad.'},
+ {id:2,ig:'',sk:'boris',title:'BORIS VS. EL ESCALERÓN',spot:'Parque Ecuador',filmer:'Pablo VX',date:'28 SEP 2026',dur:'1:58',likes:391,tag:'EDIT',desc:'Doce escalones, un varial flip y cero dudas.'},
+ {id:3,ig:'',sk:'droppa',title:'HARDFLIP EN LA COSTANERA',spot:'Costanera Sur',filmer:'Cote Cam',date:'21 SEP 2026',dur:'3:12',likes:640,tag:'PARTE COMPLETA',desc:'Doce años de calle en tres minutos de pura agresión.'},
+ {id:4,ig:'',sk:'diego',title:'DIEGO SE ADUEÑA DEL BOWL',spot:'Skatepark Los Ángeles, Ricardo Vicuña',filmer:'Maca Lens',date:'15 SEP 2026',dur:'1:34',likes:275,tag:'CLIP',desc:'Cuatro años patinando y ya manda en el cuarto de tubo.'},
+ {id:5,ig:'',sk:'diego',title:'BS BIGSPIN BAJO LA LLUVIA',spot:'Muelle Lenga',filmer:'Pablo VX',date:'09 SEP 2026',dur:'2:05',likes:518,tag:'EDIT',desc:'Mojado, resbaloso y brutal. Diego no entiende de clima.'},
+ {id:6,ig:'',sk:'raspu',title:'NOLLIE FS 180 AL MANUAL PAD',spot:'Barrio Norte',filmer:'Maca Lens',date:'02 SEP 2026',dur:'0:48',likes:203,tag:'CLIP',desc:'Un solo intento. Un solo sonido. Un solo grito.'},
+ {id:7,ig:'',sk:'boris',title:'BS TAILSLIDE AL CAJÓN',spot:'Skatepark Los Ángeles, Ricardo Vicuña',filmer:'Cote Cam',date:'25 AGO 2026',dur:'1:12',likes:338,tag:'CLIP',desc:'Tailslide largo, salida limpia y a otra cosa.'},
+ {id:8,ig:'',sk:'droppa',title:'SWITCH BS 180 AL GAP',spot:'Plaza Perú',filmer:'Pablo VX',date:'17 AGO 2026',dur:'0:56',likes:412,tag:'CLIP',desc:'Switch, de espaldas y sin mirar atrás.'}
+];
+const HOF = ['Droppa — Hardflip, Costanera','Diego — Bigspin, Muelle','Raspu — Back lip, Ricardo Vicuña','Boris — Escalerón 12'];
+const skOf = id => SKATERS.find(s=>s.id===id);
+const igEmbed = u => u.split('?')[0].replace(/\/$/,'')+'/embed';
+
+const HANDLES = {raspu:'juancamolina23',droppa:'dr0pp4',diego:'_diego.skt',boris:''};
+const STORIES = [
+ {id:'d1',sk:'droppa',label:'DROPPA 1',title:'TRICK 1',sub:'DROPPA TRICK 1',tag:'Highlight',ig:'',img:'media/droppa-1.jpg',video:'media/droppa-1.mp4'},
+ {id:'d2',sk:'droppa',label:'DROPPA 2',title:'TRICK 2',sub:'DROPPA TRICK 2',tag:'Highlight',ig:'',img:'media/droppa-2.jpg',video:'media/droppa-2.mp4'},
+ {id:'d3',sk:'droppa',label:'DROPPA 3',title:'TRICK 3',sub:'DROPPA TRICK 3',tag:'Highlight',ig:'',img:'media/droppa-3.jpg',video:'media/droppa-3.mp4'},
+ {id:'d4',sk:'droppa',label:'DROPPA 4',title:'TRICK 4',sub:'DROPPA TRICK 4',tag:'Highlight',ig:'',img:'media/droppa-4.jpg',video:'media/droppa-4.mp4'},
+ {id:'d5',sk:'droppa',label:'DROPPA 5',title:'TRICK 5',sub:'DROPPA TRICK 5',tag:'Highlight',ig:'',img:'media/droppa-5.jpg',video:'media/droppa-5.mp4'},
+ {id:'d6',sk:'droppa',label:'DROPPA 6',title:'TRICK 6',sub:'DROPPA TRICK 6',tag:'Highlight',ig:'',img:'media/droppa-6.jpg',video:'media/droppa-6.mp4'},
+ {id:'s1',sk:'raspu',label:'BACK LIP',ig:''},
+ {id:'s2',sk:'boris',label:'ESCALERÓN',ig:''},
+ {id:'s4',sk:'diego',label:'BOWL',ig:''},
+ {id:'s5',sk:'diego',label:'BIGSPIN',ig:''},
+ {id:'s6',sk:'raspu',label:'MANUAL PAD',ig:''},
+ {id:'s7',sk:'boris',label:'TAILSLIDE',ig:''}
+];
+const IGG = 'linear-gradient(45deg,#f9a825,#e91e63 55%,#7b1fa2)';
+
+/* ---------- ICONS ---------- */
+const Ic = ({d,size=20,fill='none'}) => html`<svg width=${size} height=${size} viewBox="0 0 24 24" fill=${fill} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" dangerouslySetInnerHTML=${{__html:d}}/>`;
+const I = {
+ play:'<polygon points="6 3 20 12 6 21 6 3" fill="currentColor"/>',
+ pause:'<rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/>',
+ flame:'<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.4-.5-2-1-3-1.1-2.1-.2-4 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.2.4-2.4 1-3 0 1.4 1.1 2.5 2.5 2.5z"/>',
+ x:'<path d="M18 6 6 18M6 6l12 12"/>',
+ up:'<path d="M12 3v12M7 8l5-5 5 5M5 21h14"/>',
+ menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',
+ cam:'<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3"/>'
+};
+
+const Skull = ({size=56}) => html`<svg width=${size} height=${size} viewBox="0 0 64 64">
+ <path d="M32 4C16 4 8 16 8 28c0 8 4 13 9 16v10h8v-6h4v6h6v-6h4v6h8V44c5-3 9-8 9-16C56 16 48 4 32 4z" fill="#fff" stroke="#000" strokeWidth="3"/>
+ <ellipse cx="22" cy="28" rx="6" ry="7" fill="#000"/><ellipse cx="42" cy="28" rx="6" ry="7" fill="#000"/>
+ <path d="M32 34l-4 8h8z" fill="#000"/>
+ <path d="M18 8c-4 6-4 12 0 14M32 2c-3 4-3 8 0 10M46 8c4 6 4 12 0 14" stroke="#e63946" strokeWidth="3" fill="none"/>
+</svg>`;
+
+const SkullMark = ({size=40}) => html`<svg width=${size} height=${size} viewBox="0 0 64 64">
+ <path d="M32 6C18 6 10 16 10 28c0 8 4 12 9 15v11h8v-5h4v5h6v-5h4v5h8V43c5-3 9-7 9-15C58 16 46 6 32 6z" fill="#0a0a0a"/>
+ <ellipse cx="22" cy="28" rx="6" ry="7" fill="#e8202a"/><ellipse cx="42" cy="28" rx="6" ry="7" fill="#e8202a"/>
+ <path d="M32 35l-4 8h8z" fill="#e8202a"/>
+</svg>`;
+
+/* ---------- THUMB ---------- */
+const Thumb = ({v,big,playing,progress}) => {
+ const s = skOf(v.sk);
+ return html`<div className=${'relative w-full overflow-hidden grain '+(big?'aspect-video':'aspect-video')} style=${{background:`linear-gradient(135deg,hsl(${s.hue} 70% 22%),#0a0a0a 70%)`}}>
+  ${v.img
+   ? html`<img src=${v.img} alt=${v.title} className="absolute inset-0 w-full h-full object-cover"/><div className="absolute inset-0" style=${{background:'linear-gradient(to top,rgba(0,0,0,.85),transparent 55%)'}}></div>`
+   : html`<div className="absolute inset-0 opacity-30" style=${{background:`repeating-linear-gradient(-30deg,hsl(${s.hue} 80% 50%) 0 14px,transparent 14px 40px)`}}></div>`}
+  <div className=${'absolute left-3 bottom-3 right-3 anton uppercase leading-none text-white '+(big?'text-3xl md:text-5xl':'text-lg')} style=${{textShadow:'3px 3px 0 #000'}}>${s.nick}</div>
+  <div className="absolute top-2 left-2 bg-[#f1c40f] text-black text-[10px] font-black px-2 py-0.5 body tape border-2 border-black">${v.tag}</div>
+  ${big && html`<div className="absolute inset-x-0 bottom-0 h-1.5 bg-black/60"><div className="h-full bg-[#e63946]" style=${{width:progress+'%'}}></div></div>`}
+  ${big && playing && html`<div className="absolute top-3 right-3 flex items-center gap-1 text-xs body font-bold bg-black/70 px-2 py-1"><span className="w-2 h-2 rounded-full bg-[#e63946] animate-pulse"></span> REPRODUCIENDO</div>`}
+ </div>`;
+};
+
+/* ---------- HEADER ---------- */
+const NAV = ['VIDEOS','MAGAZINE','CREW / SKATERS','SPOTS','SHOP / MERCH'];
+const Header = ({onNav}) => {
+ const [open,setOpen] = useState(false);
+ return html`<header className="border-b-4 border-[#e63946] bg-black sticky top-0 z-30" style=${{top:'env(safe-area-inset-top,0px)'}}>
+  <div className="bg-[#f1c40f] text-black text-center text-xs body font-black py-1 tracking-widest">★ CREW ARCHIVES — NUEVA EDICIÓN Nº 07 YA ESTÁ AFUERA — PATINA O MUERE ★</div>
+  <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+   <div className="flex items-center gap-3 cursor-pointer min-w-0" onClick=${()=>window.scrollTo({top:0,behavior:'smooth'})}>
+    <div className="w-11 h-11 md:w-16 md:h-16 shrink-0 flex items-center justify-center" style=${{background:'repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 1px,transparent 1px 4px),#e8202a',border:'3px solid #7a0e14',boxShadow:'3px 3px 0 #000'}}><${SkullMark} size=${40}/></div>
+    <div className="min-w-0">
+     <div className="logo">SKATE<span className="amp">${'&'}</span>DESTROY</div>
+     <div className="tag">LOCAL CREW MAGAZINE VOL. I</div>
+    </div>
+   </div>
+  </div>
+  <button onClick=${()=>setOpen(!open)} className="md:hidden w-full flex items-center justify-between anton uppercase tracking-widest text-lg px-4 py-2 bg-[#1a1a1a] border-t-2 border-[#333]"><span>MENÚ</span><${Ic} d=${open?I.x:I.menu}/></button>
+  <nav className=${(open?'block':'hidden')+' md:block border-t-2 border-[#333] bg-[#1a1a1a]'}>
+   <ul className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row md:gap-1">
+    ${NAV.map(n=>html`<li key=${n}><button onClick=${()=>{setOpen(false);onNav(n)}} className="anton uppercase tracking-widest text-lg px-4 py-2 w-full text-left hover:bg-[#e63946] hover:text-black transition-colors">${n}</button></li>`)}
+   </ul>
+  </nav>
+ </header>`;
+};
+
+/* ---------- STORIES ---------- */
+const StoryViewer = ({items,onClose}) => {
+ const [i,setI] = useState(0);
+ const [p,setP] = useState(0);
+ const [muted,setMuted] = useState(false);
+ const st = items[i];
+ const sk = skOf(st.sk);
+ const next = ()=>{ if(i<items.length-1){setI(i+1);setP(0);} else onClose(); };
+ const prev = ()=>{ if(i>0) setI(i-1); setP(0); };
+ useEffect(()=>{
+  if(st.video) return;
+  const t = setInterval(()=>setP(x=>x+2),100);
+  return ()=>clearInterval(t);
+ },[i]);
+ useEffect(()=>{ if(p>=100 && !st.video) next(); },[p]);
+ useEffect(()=>{
+  const k = e=>{ if(e.key==='Escape') onClose(); if(e.key==='ArrowRight') next(); if(e.key==='ArrowLeft') prev(); };
+  window.addEventListener('keydown',k);
+  return ()=>window.removeEventListener('keydown',k);
+ });
+ return html`<div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center" onClick=${onClose}>
+  <div className="relative w-full h-full md:max-w-[420px] md:h-[90vh] bg-[#111] overflow-hidden md:border-4 md:border-white" onClick=${e=>e.stopPropagation()}>
+   ${st.video
+    ? html`<video key=${st.id} src=${st.video} poster=${st.img} muted=${muted} autoPlay playsInline preload="auto" className="absolute inset-0 w-full h-full object-cover bg-black" onLoadedData=${e=>{ const v=e.target; const pr=v.play(); if(pr&&pr.catch) pr.catch(()=>{ v.muted=true; setMuted(true); v.play().catch(()=>{}); }); }} onTimeUpdate=${e=>setP((e.target.currentTime/(e.target.duration||1))*100)} onEnded=${next}></video>`
+    : st.img
+    ? html`<img src=${st.img} alt=${sk.name} className="absolute inset-0 w-full h-full object-cover"/>`
+    : html`<div className="absolute inset-0 grain" style=${{background:`linear-gradient(160deg,hsl(${sk.hue} 70% 28%),#0a0a0a 80%)`}}><div className="absolute inset-0 opacity-30" style=${{background:`repeating-linear-gradient(-30deg,hsl(${sk.hue} 80% 50%) 0 14px,transparent 14px 40px)`}}></div></div>`}
+   <div className="absolute inset-0" style=${{background:'linear-gradient(to top,rgba(0,0,0,.8),transparent 45%,rgba(0,0,0,.5))'}}></div>
+   <div className="absolute inset-0 flex">
+    <div className="w-1/3 h-full cursor-pointer" onClick=${prev}></div>
+    <div className="w-2/3 h-full cursor-pointer" onClick=${next}></div>
+   </div>
+   <div className="absolute top-3 left-3 right-3 flex gap-1 pointer-events-none">
+    ${items.map((x,n)=>html`<div key=${x.id} className="h-1 flex-1 bg-white/30"><div className="h-full bg-white" style=${{width:(n<i?100:n===i?Math.min(p,100):0)+'%'}}></div></div>`)}
+   </div>
+   <div className="absolute top-7 left-3 right-3 flex items-center justify-between">
+    <div className="body font-bold text-sm text-white" style=${{textShadow:'1px 1px 0 #000'}}>${sk.name} · ${(st.tag||'Highlight').toUpperCase()}</div>
+    <div className="flex items-center gap-2 relative z-10">
+     ${st.video && html`<button onClick=${()=>setMuted(m=>!m)} className="bg-black text-white border-2 border-white px-2 py-1 text-[11px] font-black body tracking-wide">${muted?'SIN SONIDO':'CON SONIDO'}</button>`}
+     <button onClick=${onClose} className="bg-black text-white border-2 border-white p-1" aria-label="Cerrar"><${Ic} d=${I.x} size=${16}/></button>
+    </div>
+   </div>
+   <div className="absolute bottom-24 left-4 right-4 pointer-events-none">
+    <div className="marker text-[#f1c40f] text-xl leading-none mb-1">"${sk.nick}"</div>
+    <div className="anton uppercase text-6xl leading-none" style=${{textShadow:'4px 4px 0 #000'}}>${st.title||st.label}</div>
+    ${st.sub && html`<div className="body font-black uppercase text-sm mt-3" style=${{textShadow:'1px 1px 0 #000'}}>${st.sub}</div>`}
+    <div className="body text-xs text-gray-300" style=${{textShadow:'1px 1px 0 #000'}}>${st.tag||'Highlight'} · ${sk.name}</div>
+   </div>
+   ${st.ig && html`<a href=${st.ig} target="_blank" rel="noopener noreferrer" className="absolute bottom-6 right-4 z-10 text-xs font-black bg-white text-black px-2 py-1 border-2 border-black">VER EN INSTAGRAM ↗</a>`}
+  </div>
+ </div>`;
+};
+
+const Stories = () => {
+ const [open,setOpen] = useState(null);
+ const skaters = [...new Set(STORIES.map(x=>x.sk))];
+ return html`<section className="mb-8">
+  <h3 className="anton text-3xl uppercase mb-3 flex items-center gap-3"><span className="bg-[#f1c40f] text-black px-2">STORIES</span><span className="w-8 h-8 rounded-lg flex items-center justify-center text-white" style=${{background:IGG}}><${Ic} d=${I.cam} size=${18}/></span> LO ÚLTIMO DEL CREW</h3>
+  <div className="flex gap-4 overflow-x-auto pb-3 pt-2">
+   ${skaters.map(id=>{
+    const items = STORIES.filter(x=>x.sk===id);
+    const st = items[0];
+    const sk = skOf(id);
+    const handle = HANDLES[id];
+    return html`<div key=${id} onClick=${()=>setOpen(items)} className="shrink-0 w-[84px] text-center cursor-pointer">
+     <div className="relative mx-auto w-[80px] h-[80px] rounded-full p-[3px]" style=${{background:IGG}}>
+      <div className="w-full h-full rounded-full border-[3px] border-[#111] overflow-hidden relative flex items-center justify-center grain" style=${{background:`linear-gradient(135deg,hsl(${sk.hue} 70% 28%),#0a0a0a 80%)`}}>
+       ${st.img && html`<img src=${st.img} alt=${sk.name} className="absolute inset-0 w-full h-full object-cover" style=${{objectPosition:'50% 62%'}}/>`}
+       ${!st.img && html`<span className="relative anton uppercase leading-none text-[11px] px-1" style=${{textShadow:'1px 1px 0 #000'}}>${st.label}</span>`}
+      </div>
+      <span className="absolute -top-1 -right-1 w-6 h-6 rounded-full border-2 border-[#111] flex items-center justify-center text-white" style=${{background:IGG}}><${Ic} d=${I.cam} size=${12}/></span>
+     </div>
+     <div className="anton uppercase text-sm mt-3 leading-none">${sk.name}</div>
+     <div className="body text-[10px] text-gray-500 min-h-[14px] truncate">${handle?'@'+handle:''}</div>
+    </div>`;
+   })}
+  </div>
+  ${open && html`<${StoryViewer} key=${open[0].id} items=${open} onClose=${()=>setOpen(null)}/>`}
+ </section>`;
+};
+
+/* ---------- HERO ---------- */
+const Hero = ({v,likes,liked,onLike,onProfile}) => {
+ const [playing,setPlaying] = useState(false);
+ const [progress,setProgress] = useState(0);
+ useEffect(()=>{setPlaying(false);setProgress(0)},[v.id]);
+ useEffect(()=>{
+  if(!playing||v.ig) return;
+  const t = setInterval(()=>setProgress(p=>p>=100?(setPlaying(false),0):p+0.8),100);
+  return ()=>clearInterval(t);
+ },[playing]);
+ const s = skOf(v.sk);
+ return html`<section className="border-4 border-white bg-[#1a1a1a] hard-r">
+  ${v.ig && playing ? html`<div className="bg-black border-b-4 border-white flex flex-col items-center py-3"><iframe src=${igEmbed(v.ig)} title=${v.title} className="w-full max-w-[400px] h-[560px] border-0 bg-white" allowFullScreen></iframe><button onClick=${()=>setPlaying(false)} className="mt-3 anton uppercase tracking-widest bg-[#f1c40f] text-black px-4 py-1 border-4 border-black hard">← VOLVER A LA PORTADA</button></div>` : html`<div className="relative cursor-pointer" onClick=${()=>setPlaying(!playing)}>
+   <${Thumb} v=${v} big playing=${playing} progress=${progress}/>
+   <div className="absolute inset-0 flex items-center justify-center">
+    <div className=${'w-20 h-20 md:w-24 md:h-24 rounded-full bg-[#e63946] border-4 border-black hard flex items-center justify-center text-white hover:scale-110 transition-transform '+(playing?'opacity-50':'')}>
+     <${Ic} d=${playing?I.pause:I.play} size=${40}/>
+    </div>
+   </div>
+  </div>`}
+  <div className="p-4 md:p-6 body">
+   <div className="flex flex-wrap items-center gap-2 mb-2">
+    <span className="bg-[#e63946] text-black text-xs font-black px-2 py-1 border-2 border-black">VIDEO DEL MES</span>
+    <span className="text-xs text-gray-400">${v.date} · ${v.dur} · ${v.spot}</span>
+    ${v.ig && html`<a href=${v.ig} target="_blank" rel="noopener noreferrer" className="text-xs font-black bg-white text-black px-2 py-1 border-2 border-black">VER EN INSTAGRAM ↗</a>`}
+   </div>
+   <h2 className="anton text-3xl md:text-5xl uppercase leading-none mb-3">${v.title}</h2>
+   <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm mb-3">
+    <button onClick=${()=>onProfile(s.id)} className="underline decoration-[#f1c40f] decoration-2 hover:text-[#f1c40f]"><b className="text-[#f1c40f]">SKATER:</b> ${s.name}</button>
+    <span><b className="text-[#f1c40f]">FILMER:</b> ${v.filmer}</span>
+   </div>
+   <p className="text-gray-300 mb-4 max-w-3xl">${v.desc}</p>
+   <button onClick=${onLike} className=${'anton uppercase tracking-widest text-lg px-5 py-2 border-4 border-black hard flex items-center gap-2 active:translate-x-1 active:translate-y-1 active:shadow-none transition '+(liked?'bg-[#e63946] text-white':'bg-[#f1c40f] text-black')}>
+    <${Ic} d=${I.flame} fill=${liked?'currentColor':'none'}/> STOKE · ${likes}
+   </button>
+  </div>
+ </section>`;
+};
+
+/* ---------- ROSTER ---------- */
+const Roster = ({filter,setFilter,onProfile}) => {
+ const s = filter==='all'?null:skOf(filter);
+ return html`<section id="crew" className="mt-10">
+  <h3 className="anton text-3xl uppercase mb-3 flex items-center gap-3"><span className="bg-[#e63946] px-2 text-black">THE CREW</span> FILTRA POR SKATER</h3>
+  <div className="flex flex-wrap gap-2 mb-4">
+   <button onClick=${()=>setFilter('all')} className=${'anton uppercase tracking-wider px-4 py-2 border-4 border-black hard '+(filter==='all'?'bg-[#f1c40f] text-black':'bg-[#222] text-white hover:bg-[#333]')}>TODOS</button>
+   ${SKATERS.map(k=>html`<button key=${k.id} onClick=${()=>setFilter(k.id)} className=${'anton uppercase tracking-wider px-4 py-2 border-4 border-black hard '+(filter===k.id?'bg-[#e63946] text-white':'bg-[#222] text-white hover:bg-[#333]')}>${k.name}</button>`)}
+  </div>
+  ${s && html`<div className="border-4 border-[#f1c40f] bg-[#1a1a1a] p-4 body grid md:grid-cols-3 gap-4">
+   <div>
+    <div className="anton text-4xl uppercase" style=${{color:`hsl(${s.hue} 80% 60%)`}}>${s.name}</div>
+    <div className="marker text-[#f1c40f]">"${s.nick}"</div>
+    <button onClick=${()=>onProfile(s.id)} className="mt-3 anton uppercase bg-white text-black px-3 py-1 border-2 border-black hard">VER FICHA</button>
+   </div>
+   <div className="grid grid-cols-3 gap-2 text-center">
+    ${[['STANCE',s.stance],['AÑOS',s.years],['PARTES',VIDEOS.filter(v=>v.sk===s.id).length]].map(([a,b])=>html`<div key=${a} className="border-2 border-[#444] p-2"><div className="text-[10px] text-gray-400">${a}</div><div className="anton text-xl">${b}</div></div>`)}
+   </div>
+   <div>
+    <div className="text-xs text-gray-400 mb-1">FOTOS DE TRUCOS</div>
+    <div className="grid grid-cols-3 gap-2">
+     ${s.favs.map((f,i)=>html`<div key=${f} title=${f} className="aspect-square grain border-2 border-black flex items-end p-1 text-[9px] font-black leading-tight" style=${{background:`linear-gradient(${135+i*50}deg,hsl(${s.hue+i*25} 70% 30%),#000)`}}>${f}</div>`)}
+    </div>
+   </div>
+  </div>`}
+ </section>`;
+};
+
+/* ---------- CARD ---------- */
+const Card = ({v,likes,liked,active,onPick,onLike}) => html`<article className=${'border-4 bg-[#1a1a1a] hard transition-transform hover:-translate-y-1 '+(active?'border-[#e63946]':'border-black')}>
+ <div className="cursor-pointer relative" onClick=${()=>onPick(v.id)}>
+  <${Thumb} v=${v}/>
+  <span className="absolute bottom-2 right-2 bg-black text-white text-xs body font-bold px-1.5">${v.dur}</span>
+ </div>
+ <div className="p-3 body">
+  <h4 onClick=${()=>onPick(v.id)} className="anton uppercase text-lg leading-tight cursor-pointer hover:text-[#f1c40f]">${v.title}</h4>
+  <div className="text-xs text-gray-400 mt-1">${skOf(v.sk).name} · ${v.spot} · ${v.date}</div>
+  ${v.ig && html`<a href=${v.ig} target="_blank" rel="noopener noreferrer" className="inline-block mt-2 text-xs font-bold text-[#f1c40f] underline">VER EN INSTAGRAM ↗</a>`}
+  <button onClick=${onLike} className=${'mt-3 anton uppercase text-sm tracking-wider px-3 py-1 border-2 border-black flex items-center gap-1 '+(liked?'bg-[#e63946] text-white':'bg-[#f1c40f] text-black')}><${Ic} d=${I.flame} size=${16} fill=${liked?'currentColor':'none'}/> HYPE ${likes}</button>
+ </div>
+</article>`;
+
+/* ---------- SIDEBAR ---------- */
+const Sidebar = () => {
+ const [sent,setSent] = useState(false);
+ const [f,setF] = useState({name:'',link:'',trick:''});
+ const set = k => e => setF({...f,[k]:e.target.value});
+ const inp = 'w-full bg-black border-2 border-[#555] px-2 py-1.5 text-sm text-white focus:outline-none focus:border-[#f1c40f]';
+ return html`<aside className="space-y-6 body">
+  <div className="border-4 border-black bg-[#e63946] hard p-3 text-black">
+   <div className="anton text-xl uppercase">COVER OF THE MONTH</div>
+   <div className="aspect-[3/4] mt-2 border-4 border-black grain flex flex-col justify-between p-3 relative overflow-hidden" style=${{background:'linear-gradient(160deg,#f1c40f,#e63946 60%,#111)'}}>
+    <div className="anton text-2xl text-black leading-none">CREW ARCHIVES</div>
+    <div className="absolute inset-0 flex items-center justify-center opacity-90"><${Skull} size=${120}/></div>
+    <div className="anton text-white text-3xl uppercase leading-none relative" style=${{textShadow:'3px 3px 0 #000'}}>RASPU<br/>BACK LIP</div>
+   </div>
+  </div>
+  <div className="border-4 border-white bg-[#1a1a1a] p-3">
+   <div className="anton text-xl uppercase text-[#f1c40f] mb-2">★ HALL OF FAME</div>
+   <ol className="space-y-2">
+    ${HOF.map((h,i)=>html`<li key=${h} className="flex gap-2 items-start border-b border-[#333] pb-2"><span className="anton text-2xl text-[#e63946] w-6">${i+1}</span><span className="text-sm font-bold">${h}</span></li>`)}
+   </ol>
+  </div>
+  <div className="border-4 border-[#f1c40f] bg-[#1a1a1a] p-3">
+   <div className="anton text-xl uppercase mb-2 flex items-center gap-2"><${Ic} d=${I.up}/> ENVÍA TU CLIP</div>
+   ${sent ? html`<div className="text-center py-4"><div className="marker text-2xl text-[#f1c40f]">¡RECIBIDO!</div><p className="text-sm text-gray-300 mt-1">Si es brutal, lo publicamos.</p><button onClick=${()=>{setSent(false);setF({name:'',link:'',trick:''})}} className="mt-3 anton uppercase underline">Enviar otro</button></div>` :
+   html`<div className="space-y-2">
+    <input className=${inp} placeholder="Tu nombre / crew" value=${f.name} onChange=${set('name')}/>
+    <input className=${inp} placeholder="Link del clip (YouTube, IG...)" value=${f.link} onChange=${set('link')}/>
+    <textarea className=${inp} rows="2" placeholder="Truco y spot" value=${f.trick} onChange=${set('trick')}></textarea>
+    <button disabled=${!f.name||!f.link} onClick=${()=>setSent(true)} className="w-full anton uppercase tracking-widest bg-[#e63946] text-white py-2 border-4 border-black hard disabled:opacity-40">MANDAR AL ARCHIVO</button>
+   </div>`}
+  </div>
+  <div className="border-4 border-black bg-white text-black p-3 text-center hard tape">
+   <div className="anton text-2xl uppercase">MERCH DROP</div>
+   <div className="text-sm font-bold">Polera "Skate and Destroy" — $18.990</div>
+  </div>
+ </aside>`;
+};
+
+/* ---------- MODAL ---------- */
+const Profile = ({id,onClose,onFilter}) => {
+ const s = skOf(id);
+ const vids = VIDEOS.filter(v=>v.sk===id);
+ return html`<div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-3 overflow-y-auto" onClick=${onClose}>
+  <div className="relative w-full max-w-2xl bg-[#161616] border-4 border-white hard-r body my-6" onClick=${e=>e.stopPropagation()}>
+   <button onClick=${onClose} className="absolute -top-3 -right-3 bg-[#e63946] text-white border-4 border-black p-1"><${Ic} d=${I.x}/></button>
+   <div className="p-5 grain" style=${{background:`linear-gradient(120deg,hsl(${s.hue} 70% 25%),#111)`}}>
+    <div className="marker text-[#f1c40f] text-xl">"${s.nick}"</div>
+    <div className="anton text-6xl uppercase leading-none" style=${{textShadow:'4px 4px 0 #000'}}>${s.name}</div>
+    <div className="text-sm mt-1">${s.stance} · ${s.years} años rodando · ${s.spot}</div>
+    ${s.ig && html`<a href=${s.ig} target="_blank" rel="noopener noreferrer" className="inline-block mt-2 text-xs font-black bg-white text-black px-2 py-1 border-2 border-black">SU INSTAGRAM ↗</a>`}
+   </div>
+   <div className="p-5 grid md:grid-cols-2 gap-5">
+    <div>
+     <div className="anton uppercase text-[#f1c40f] text-lg mb-2">TRUCOS FAVORITOS</div>
+     <ul className="space-y-1">${s.favs.map(f=>html`<li key=${f} className="border-l-4 border-[#e63946] pl-2 font-bold text-sm">${f}</li>`)}</ul>
+    </div>
+    <div>
+     <div className="anton uppercase text-[#f1c40f] text-lg mb-2">SETUP</div>
+     <dl className="text-sm space-y-1">${Object.entries(s.setup).map(([k,v])=>html`<div key=${k} className="flex justify-between border-b border-[#333]"><dt className="uppercase text-gray-400">${k}</dt><dd className="font-bold">${v}</dd></div>`)}</dl>
+    </div>
+   </div>
+   <div className="px-5 pb-5">
+    <div className="anton uppercase text-[#f1c40f] text-lg mb-2">EDITS (${vids.length})</div>
+    <ul className="space-y-1 mb-4">${vids.map(v=>html`<li key=${v.id} className="text-sm flex justify-between gap-2"><span>▶ ${v.title}</span><span className="text-gray-400">${v.dur}</span></li>`)}</ul>
+    <button onClick=${()=>{onFilter(id);onClose()}} className="anton uppercase tracking-widest bg-[#f1c40f] text-black px-4 py-2 border-4 border-black hard">FILTRAR SOLO A ${s.name}</button>
+   </div>
+  </div>
+ </div>`;
+};
+
+/* ---------- APP ---------- */
+const App = () => {
+ const [filter,setFilter] = useState('all');
+ const [activeId,setActiveId] = useState(1);
+ const [liked,setLiked] = useState({});
+ const [profile,setProfile] = useState(null);
+ const list = useMemo(()=>filter==='all'?VIDEOS:VIDEOS.filter(v=>v.sk===filter),[filter]);
+ const active = VIDEOS.find(v=>v.id===activeId);
+ const likes = v => v.likes + (liked[v.id]?1:0);
+ const toggle = id => setLiked(l=>({...l,[id]:!l[id]}));
+ const pick = id => {setActiveId(id);window.scrollTo({top:0,behavior:'smooth'})};
+ const nav = n => {
+  const target = n.startsWith('CREW')?'crew':n==='VIDEOS'?'grid':null;
+  if(target) document.getElementById(target)?.scrollIntoView({behavior:'smooth'});
+  else window.scrollTo({top:0,behavior:'smooth'});
+ };
+ return html`<div className="min-h-screen">
+  <${Header} onNav=${nav}/>
+  <main className="max-w-7xl mx-auto px-4 py-6 grid lg:grid-cols-[1fr_320px] gap-8">
+   <div>
+    <${Stories}/>
+    <${Hero} v=${active} likes=${likes(active)} liked=${!!liked[active.id]} onLike=${()=>toggle(active.id)} onProfile=${setProfile}/>
+    <${Roster} filter=${filter} setFilter=${setFilter} onProfile=${setProfile}/>
+    <section id="grid" className="mt-8">
+     <h3 className="anton text-3xl uppercase mb-4 flex items-center gap-3"><span className="bg-[#f1c40f] text-black px-2">LATEST</span> EDITS / VIDEO PARTS <span className="text-sm text-gray-400 body">(${list.length})</span></h3>
+     <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
+      ${list.map(v=>html`<${Card} key=${v.id} v=${v} likes=${likes(v)} liked=${!!liked[v.id]} active=${v.id===activeId} onPick=${pick} onLike=${()=>toggle(v.id)}/>`)}
+     </div>
+    </section>
+   </div>
+   <${Sidebar}/>
+  </main>
+  <footer className="border-t-4 border-[#e63946] bg-black py-6 text-center body text-xs text-gray-400">
+   <div className="flex justify-center mb-2"><${Skull} size=${36}/></div>
+   CREW ARCHIVES © 2026 — SKATE AND DESTROY. Prototipo inspirado en la estética de las revistas de skate.
+  </footer>
+  ${profile && html`<${Profile} id=${profile} onClose=${()=>setProfile(null)} onFilter=${setFilter}/>`}
+ </div>`;
+};
+ReactDOM.createRoot(document.getElementById('root')).render(html`<${App}/>`);
+</script>
+</body>
+</html>
