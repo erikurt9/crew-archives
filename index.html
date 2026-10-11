@@ -147,19 +147,30 @@ const Header = ({onNav}) => {
 };
 
 /* ---------- STORIES ---------- */
-const StoryViewer = ({items,onClose}) => {
+const StoryViewer = ({groups,start,onClose}) => {
+ const [g,setG] = useState(start);
  const [i,setI] = useState(0);
+ const touch = React.useRef(null);
+ const items = groups[g];
  const [p,setP] = useState(0);
  const [muted,setMuted] = useState(false);
  const st = items[i];
  const sk = skOf(st.sk);
- const next = ()=>{ if(i<items.length-1){setI(i+1);setP(0);} else onClose(); };
- const prev = ()=>{ if(i>0) setI(i-1); setP(0); };
+ const next = ()=>{ setP(0); if(i<items.length-1) setI(i+1); else if(g<groups.length-1){ setG(g+1); setI(0); } else onClose(); };
+ const prev = ()=>{ setP(0); if(i>0) setI(i-1); else if(g>0){ setG(g-1); setI(0); } };
+ const canPrev = g>0 || i>0;
+ const onTS = e=>{ const t=e.touches[0]; touch.current={x:t.clientX,y:t.clientY}; };
+ const onTE = e=>{
+  if(!touch.current) return;
+  const t=e.changedTouches[0]; const dx=t.clientX-touch.current.x; const dy=t.clientY-touch.current.y; touch.current=null;
+  if(Math.abs(dx)>50 && Math.abs(dx)>Math.abs(dy)) { dx<0 ? next() : prev(); }
+  else if(dy>100 && Math.abs(dy)>Math.abs(dx)) onClose();
+ };
  useEffect(()=>{
   if(st.video) return;
   const t = setInterval(()=>setP(x=>x+2),100);
   return ()=>clearInterval(t);
- },[i]);
+ },[g,i]);
  useEffect(()=>{ if(p>=100 && !st.video) next(); },[p]);
  useEffect(()=>{
   const k = e=>{ if(e.key==='Escape') onClose(); if(e.key==='ArrowRight') next(); if(e.key==='ArrowLeft') prev(); };
@@ -167,7 +178,10 @@ const StoryViewer = ({items,onClose}) => {
   return ()=>window.removeEventListener('keydown',k);
  });
  return html`<div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center" onClick=${onClose}>
-  <div className="relative w-full h-full md:max-w-[420px] md:h-[90vh] bg-[#111] overflow-hidden md:border-4 md:border-white" onClick=${e=>e.stopPropagation()}>
+  <div className="relative w-full h-full md:max-w-[420px] md:h-[90vh]" onClick=${e=>e.stopPropagation()}>
+   ${canPrev && html`<button onClick=${prev} aria-label="Anterior" className="hidden md:flex absolute top-1/2 -translate-y-1/2 -left-16 w-12 h-12 items-center justify-center rounded-full bg-black text-white border-2 border-white hover:bg-[#e63946] text-2xl font-black leading-none">‹</button>`}
+   <button onClick=${next} aria-label="Siguiente" className="hidden md:flex absolute top-1/2 -translate-y-1/2 -right-16 w-12 h-12 items-center justify-center rounded-full bg-black text-white border-2 border-white hover:bg-[#e63946] text-2xl font-black leading-none">›</button>
+  <div className="absolute inset-0 bg-[#111] overflow-hidden md:border-4 md:border-white" style=${{touchAction:'pan-y'}} onTouchStart=${onTS} onTouchEnd=${onTE}>
    ${st.video
     ? html`<video key=${st.id} src=${st.video} poster=${st.img} muted=${muted} autoPlay playsInline preload="auto" className="absolute inset-0 w-full h-full object-cover bg-black" onLoadedData=${e=>{ const v=e.target; const pr=v.play(); if(pr&&pr.catch) pr.catch(()=>{ v.muted=true; setMuted(true); v.play().catch(()=>{}); }); }} onTimeUpdate=${e=>setP((e.target.currentTime/(e.target.duration||1))*100)} onEnded=${next}></video>`
     : st.img
@@ -196,6 +210,7 @@ const StoryViewer = ({items,onClose}) => {
    </div>
    ${st.ig && html`<a href=${st.ig} target="_blank" rel="noopener noreferrer" className="absolute bottom-6 right-4 z-10 text-xs font-black bg-white text-black px-2 py-1 border-2 border-black">VER EN INSTAGRAM ↗</a>`}
   </div>
+  </div>
  </div>`;
 };
 
@@ -210,7 +225,7 @@ const Stories = () => {
     const st = items[0];
     const sk = skOf(id);
     const handle = HANDLES[id];
-    return html`<div key=${id} onClick=${()=>setOpen(items)} className="shrink-0 w-[84px] text-center cursor-pointer">
+    return html`<div key=${id} onClick=${()=>setOpen(skaters.indexOf(id))} className="shrink-0 w-[84px] text-center cursor-pointer">
      <div className="relative mx-auto w-[80px] h-[80px] rounded-full p-[3px]" style=${{background:IGG}}>
       <div className="w-full h-full rounded-full border-[3px] border-[#111] overflow-hidden relative flex items-center justify-center grain" style=${{background:`linear-gradient(135deg,hsl(${sk.hue} 70% 28%),#0a0a0a 80%)`}}>
        ${st.img && html`<img src=${st.img} alt=${sk.name} className="absolute inset-0 w-full h-full object-cover" style=${{objectPosition:'50% 62%'}}/>`}
@@ -223,7 +238,7 @@ const Stories = () => {
     </div>`;
    })}
   </div>
-  ${open && html`<${StoryViewer} key=${open[0].id} items=${open} onClose=${()=>setOpen(null)}/>`}
+  ${open!==null && html`<${StoryViewer} key=${'v'+open} groups=${skaters.map(sid=>STORIES.filter(x=>x.sk===sid))} start=${open} onClose=${()=>setOpen(null)}/>`}
  </section>`;
 };
 
