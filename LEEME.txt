@@ -1,0 +1,16 @@
+CREW ARCHIVES — estructura del proyecto
+
+crew-archives/
+  index.html          <- toda la página (React + Tailwind por CDN)
+  media/
+    droppa/           droppa-1.mp4 + droppa-1.jpg ... droppa-6
+    diego/            diego-1.mp4  + diego-1.jpg  ... diego-6
+
+Cómo agregar clips a un skater:
+  1. Crea media/<skater>/ y pon <skater>-1.mp4 ... (videos verticales, H.264, livianos)
+  2. Pon al lado <skater>-1.jpg ... (imagen previa, mismo nombre). El -1.jpg es la portada del círculo.
+  3. En index.html, en SKATERS, al skater agrégale:
+     hlCover:'media/<skater>/<skater>-1.jpg',
+     hlClips:['media/<skater>/<skater>-1.mp4', ... ]
+
+Para subir: sube index.html y la carpeta media/ al repositorio de GitHub (Vercel se actualiza solo).

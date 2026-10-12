@@ -4,15 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>CREW ARCHIVES — Skate and Destroy</title>
-<meta name="description" content="Revista local de skate. Videos, edits y partes completas de la crew.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="CREW ARCHIVES — Skate and Destroy">
-<meta property="og:description" content="Revista local de skate. Videos, edits y partes completas de la crew.">
-<meta property="og:image" content="https://crew-archives-vercel-3.vercel.app/crew-foto.jpg">
-<meta property="og:image:width" content="889">
-<meta property="og:image:height" content="490">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://crew-archives-vercel-3.vercel.app/crew-foto.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Permanent+Marker&family=Archivo:ital,wdth,wght@1,125,900&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
@@ -43,45 +34,32 @@ const html = htm.bind(React.createElement);
 
 /* ---------- DATA ---------- */
 const SKATERS = [
- {id:'raspu',ig:'',name:'Raspu',nick:'EL PÁJARO',stance:'Regular',years:9,spot:'Skatepark Los Ángeles, Ricardo Vicuña',hue:350,
+ {id:'raspu',ig:'https://www.instagram.com/juancamolina23/',name:'Raspu',nick:'EL PÁJARO',stance:'Regular',years:9,spot:'Skatepark Los Ángeles, Ricardo Vicuña',hue:350,
   favs:['Kickflip back lip','Frontside 180 nollie','Tre flip'],setup:{deck:'8.25" Maple 7-ply',trucks:'Independent 149',wheels:'54mm 99A',bearings:'Bones Reds'}},
  {id:'boris',ig:'',name:'Boris',nick:'EL ZORRO',stance:'Goofy',years:6,spot:'Parque Ecuador',hue:45,
   favs:['Backside tailslide','Varial flip','Manual a nollie'],setup:{deck:'8.0" Maple 7-ply',trucks:'Thunder 147',wheels:'52mm 101A',bearings:'Swiss'}},
- {id:'droppa',ig:'',name:'Droppa',nick:'HUESOS',stance:'Regular',years:12,spot:'Costanera Sur',hue:200,
+ {id:'droppa',ig:'https://www.instagram.com/dr0pp4/',hl:'https://www.instagram.com/stories/highlights/18050739551253964/',hlCover:'media/droppa/droppa-1.jpg',hlClips:['media/droppa/droppa-1.mp4','media/droppa/droppa-2.mp4','media/droppa/droppa-3.mp4','media/droppa/droppa-4.mp4','media/droppa/droppa-5.mp4','media/droppa/droppa-6.mp4'],name:'Droppa',nick:'HUESOS',stance:'Regular',years:12,spot:'Costanera Sur',hue:200,
   favs:['Hardflip','Switch bs 180','Noseslide largo'],setup:{deck:'8.5" Maple 8-ply',trucks:'Venture 5.6',wheels:'56mm 99A',bearings:'Bronson G3'}},
- {id:'diego',ig:'',name:'Diego',nick:'EL TIGRE',stance:'Goofy',years:4,spot:'Skatepark Los Ángeles, Ricardo Vicuña',hue:280,
+ {id:'diego',ig:'https://www.instagram.com/_diego.skt/',hlCover:'media/diego/diego-1.jpg',hlClips:['media/diego/diego-1.mp4','media/diego/diego-2.mp4','media/diego/diego-3.mp4','media/diego/diego-4.mp4','media/diego/diego-5.mp4','media/diego/diego-6.mp4'],name:'Diego',nick:'EL TIGRE',stance:'Goofy',years:4,spot:'Skatepark Los Ángeles, Ricardo Vicuña',hue:280,
   favs:['Fs boardslide','Ollie al gap','Bs bigspin'],setup:{deck:'7.875" Maple 7-ply',trucks:'Independent 139',wheels:'53mm 100A',bearings:'Bones Swiss'}}
 ];
 const VIDEOS = [
- {id:1,ig:'',img:'crew-foto.jpg',sk:'raspu',title:'KICKFLIP BACK LIP AL RIEL DE LA MUERTE',spot:'Skatepark Los Ángeles, Ricardo Vicuña',filmer:'Cote Cam',date:'03 OCT 2026',dur:'2:41',likes:482,tag:'CREW',desc:'Raspu se come la plaza entera: rieles, gaps y un back lip que todavía retumba en el barrio. Filmado en fisheye, sin cortes ni piedad.'},
- {id:2,ig:'',sk:'boris',title:'BORIS VS. EL ESCALERÓN',spot:'Parque Ecuador',filmer:'Pablo VX',date:'28 SEP 2026',dur:'1:58',likes:391,tag:'EDIT',desc:'Doce escalones, un varial flip y cero dudas.'},
- {id:3,ig:'',sk:'droppa',title:'HARDFLIP EN LA COSTANERA',spot:'Costanera Sur',filmer:'Cote Cam',date:'21 SEP 2026',dur:'3:12',likes:640,tag:'PARTE COMPLETA',desc:'Doce años de calle en tres minutos de pura agresión.'},
- {id:4,ig:'',sk:'diego',title:'DIEGO SE ADUEÑA DEL BOWL',spot:'Skatepark Los Ángeles, Ricardo Vicuña',filmer:'Maca Lens',date:'15 SEP 2026',dur:'1:34',likes:275,tag:'CLIP',desc:'Cuatro años patinando y ya manda en el cuarto de tubo.'},
- {id:5,ig:'',sk:'diego',title:'BS BIGSPIN BAJO LA LLUVIA',spot:'Muelle Lenga',filmer:'Pablo VX',date:'09 SEP 2026',dur:'2:05',likes:518,tag:'EDIT',desc:'Mojado, resbaloso y brutal. Diego no entiende de clima.'},
- {id:6,ig:'',sk:'raspu',title:'NOLLIE FS 180 AL MANUAL PAD',spot:'Barrio Norte',filmer:'Maca Lens',date:'02 SEP 2026',dur:'0:48',likes:203,tag:'CLIP',desc:'Un solo intento. Un solo sonido. Un solo grito.'},
- {id:7,ig:'',sk:'boris',title:'BS TAILSLIDE AL CAJÓN',spot:'Skatepark Los Ángeles, Ricardo Vicuña',filmer:'Cote Cam',date:'25 AGO 2026',dur:'1:12',likes:338,tag:'CLIP',desc:'Tailslide largo, salida limpia y a otra cosa.'},
- {id:8,ig:'',sk:'droppa',title:'SWITCH BS 180 AL GAP',spot:'Plaza Perú',filmer:'Pablo VX',date:'17 AGO 2026',dur:'0:56',likes:412,tag:'CLIP',desc:'Switch, de espaldas y sin mirar atrás.'}
+ {id:1,short:'BACK LIP',ig:'',sk:'raspu',title:'KICKFLIP BACK LIP AL RIEL DE LA MUERTE',spot:'Skatepark Los Ángeles, Ricardo Vicuña',filmer:'Cote Cam',date:'03 OCT 2026',dur:'2:41',likes:482,tag:'PARTE COMPLETA',desc:'Raspu se come la plaza entera: rieles, gaps y un back lip que todavía retumba en el barrio. Filmado en fisheye, sin cortes ni piedad.'},
+ {id:2,short:'ESCALERÓN',ig:'',sk:'boris',title:'BORIS VS. EL ESCALERÓN',spot:'Parque Ecuador',filmer:'Pablo VX',date:'28 SEP 2026',dur:'1:58',likes:391,tag:'EDIT',desc:'Doce escalones, un varial flip y cero dudas.'},
+ {id:3,short:'HARDFLIP',ig:'',sk:'droppa',title:'HARDFLIP EN LA COSTANERA',spot:'Costanera Sur',filmer:'Cote Cam',date:'21 SEP 2026',dur:'3:12',likes:640,tag:'PARTE COMPLETA',desc:'Doce años de calle en tres minutos de pura agresión.'},
+ {id:4,short:'BOWL',ig:'',sk:'diego',title:'DIEGO SE ADUEÑA DEL BOWL',spot:'Skatepark Los Ángeles, Ricardo Vicuña',filmer:'Maca Lens',date:'15 SEP 2026',dur:'1:34',likes:275,tag:'CLIP',desc:'Cuatro años patinando y ya manda en el cuarto de tubo.'},
+ {id:5,short:'BIGSPIN',ig:'',sk:'diego',title:'BS BIGSPIN BAJO LA LLUVIA',spot:'Muelle Lenga',filmer:'Pablo VX',date:'09 SEP 2026',dur:'2:05',likes:518,tag:'EDIT',desc:'Mojado, resbaloso y brutal. Diego no entiende de clima.'},
+ {id:6,short:'MANUAL PAD',ig:'',sk:'raspu',title:'NOLLIE FS 180 AL MANUAL PAD',spot:'Barrio Norte',filmer:'Maca Lens',date:'02 SEP 2026',dur:'0:48',likes:203,tag:'CLIP',desc:'Un solo intento. Un solo sonido. Un solo grito.'},
+ {id:7,short:'TAILSLIDE',ig:'',sk:'boris',title:'BS TAILSLIDE AL CAJÓN',spot:'Skatepark Los Ángeles, Ricardo Vicuña',filmer:'Cote Cam',date:'25 AGO 2026',dur:'1:12',likes:338,tag:'CLIP',desc:'Tailslide largo, salida limpia y a otra cosa.'},
+ {id:8,short:'SWITCH 180',ig:'',sk:'droppa',title:'SWITCH BS 180 AL GAP',spot:'Plaza Perú',filmer:'Pablo VX',date:'17 AGO 2026',dur:'0:56',likes:412,tag:'CLIP',desc:'Switch, de espaldas y sin mirar atrás.'}
 ];
 const HOF = ['Droppa — Hardflip, Costanera','Diego — Bigspin, Muelle','Raspu — Back lip, Ricardo Vicuña','Boris — Escalerón 12'];
 const skOf = id => SKATERS.find(s=>s.id===id);
+const MES={ENE:0,FEB:1,MAR:2,ABR:3,MAY:4,JUN:5,JUL:6,AGO:7,SEP:8,OCT:9,NOV:10,DIC:11};
+const dateOf = v => {const [d,m,y]=v.date.split(' ');return new Date(+y,MES[m],+d).getTime()};
+const LATEST = [...VIDEOS].sort((a,b)=>dateOf(b)-dateOf(a));
+const hlItems = k => (k.hlClips||[]).map((c,n)=>({id:'hl-'+k.id+'-'+n,sk:k.id,short:'TRICK '+(n+1),title:k.name.toUpperCase()+' TRICK '+(n+1),spot:'Highlight · '+k.name,dur:'',date:'HIGHLIGHT',clip:c,poster:/\.mp4$/.test(c)?c.replace(/\.mp4$/,'.jpg'):undefined,hlOnly:true}));
 const igEmbed = u => u.split('?')[0].replace(/\/$/,'')+'/embed';
-
-const HANDLES = {raspu:'juancamolina23',droppa:'dr0pp4',diego:'_diego.skt',boris:''};
-const STORIES = [
- {id:'d1',sk:'droppa',label:'DROPPA 1',title:'TRICK 1',sub:'DROPPA TRICK 1',tag:'Highlight',ig:'',img:'media/droppa-1.jpg',video:'media/droppa-1.mp4'},
- {id:'d2',sk:'droppa',label:'DROPPA 2',title:'TRICK 2',sub:'DROPPA TRICK 2',tag:'Highlight',ig:'',img:'media/droppa-2.jpg',video:'media/droppa-2.mp4'},
- {id:'d3',sk:'droppa',label:'DROPPA 3',title:'TRICK 3',sub:'DROPPA TRICK 3',tag:'Highlight',ig:'',img:'media/droppa-3.jpg',video:'media/droppa-3.mp4'},
- {id:'d4',sk:'droppa',label:'DROPPA 4',title:'TRICK 4',sub:'DROPPA TRICK 4',tag:'Highlight',ig:'',img:'media/droppa-4.jpg',video:'media/droppa-4.mp4'},
- {id:'d5',sk:'droppa',label:'DROPPA 5',title:'TRICK 5',sub:'DROPPA TRICK 5',tag:'Highlight',ig:'',img:'media/droppa-5.jpg',video:'media/droppa-5.mp4'},
- {id:'d6',sk:'droppa',label:'DROPPA 6',title:'TRICK 6',sub:'DROPPA TRICK 6',tag:'Highlight',ig:'',img:'media/droppa-6.jpg',video:'media/droppa-6.mp4'},
- {id:'s1',sk:'raspu',label:'BACK LIP',ig:''},
- {id:'s2',sk:'boris',label:'ESCALERÓN',ig:''},
- {id:'s4',sk:'diego',label:'BOWL',ig:''},
- {id:'s5',sk:'diego',label:'BIGSPIN',ig:''},
- {id:'s6',sk:'raspu',label:'MANUAL PAD',ig:''},
- {id:'s7',sk:'boris',label:'TAILSLIDE',ig:''}
-];
-const IGG = 'linear-gradient(45deg,#f9a825,#e91e63 55%,#7b1fa2)';
 
 /* ---------- ICONS ---------- */
 const Ic = ({d,size=20,fill='none'}) => html`<svg width=${size} height=${size} viewBox="0 0 24 24" fill=${fill} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" dangerouslySetInnerHTML=${{__html:d}}/>`;
@@ -108,13 +86,15 @@ const SkullMark = ({size=40}) => html`<svg width=${size} height=${size} viewBox=
  <path d="M32 35l-4 8h8z" fill="#e8202a"/>
 </svg>`;
 
+const IgLogo = ({size=24}) => html`<svg width=${size} height=${size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="6"/><circle cx="12" cy="12" r="4.5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>`;
+const IG_BG = 'linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7)';
+const igUser = u => u ? '@'+u.split('instagram.com/')[1].split(/[\/?]/)[0] : null;
+
 /* ---------- THUMB ---------- */
 const Thumb = ({v,big,playing,progress}) => {
  const s = skOf(v.sk);
  return html`<div className=${'relative w-full overflow-hidden grain '+(big?'aspect-video':'aspect-video')} style=${{background:`linear-gradient(135deg,hsl(${s.hue} 70% 22%),#0a0a0a 70%)`}}>
-  ${v.img
-   ? html`<img src=${v.img} alt=${v.title} className="absolute inset-0 w-full h-full object-cover"/><div className="absolute inset-0" style=${{background:'linear-gradient(to top,rgba(0,0,0,.85),transparent 55%)'}}></div>`
-   : html`<div className="absolute inset-0 opacity-30" style=${{background:`repeating-linear-gradient(-30deg,hsl(${s.hue} 80% 50%) 0 14px,transparent 14px 40px)`}}></div>`}
+  <div className="absolute inset-0 opacity-30" style=${{background:`repeating-linear-gradient(-30deg,hsl(${s.hue} 80% 50%) 0 14px,transparent 14px 40px)`}}></div>
   <div className=${'absolute left-3 bottom-3 right-3 anton uppercase leading-none text-white '+(big?'text-3xl md:text-5xl':'text-lg')} style=${{textShadow:'3px 3px 0 #000'}}>${s.nick}</div>
   <div className="absolute top-2 left-2 bg-[#f1c40f] text-black text-[10px] font-black px-2 py-0.5 body tape border-2 border-black">${v.tag}</div>
   ${big && html`<div className="absolute inset-x-0 bottom-0 h-1.5 bg-black/60"><div className="h-full bg-[#e63946]" style=${{width:progress+'%'}}></div></div>`}
@@ -144,102 +124,6 @@ const Header = ({onNav}) => {
    </ul>
   </nav>
  </header>`;
-};
-
-/* ---------- STORIES ---------- */
-const StoryViewer = ({groups,start,onClose}) => {
- const [g,setG] = useState(start);
- const [i,setI] = useState(0);
- const touch = React.useRef(null);
- const items = groups[g];
- const [p,setP] = useState(0);
- const [muted,setMuted] = useState(false);
- const st = items[i];
- const sk = skOf(st.sk);
- const next = ()=>{ setP(0); if(i<items.length-1) setI(i+1); else if(g<groups.length-1){ setG(g+1); setI(0); } else onClose(); };
- const prev = ()=>{ setP(0); if(i>0) setI(i-1); else if(g>0){ setG(g-1); setI(0); } };
- const canPrev = g>0 || i>0;
- const onTS = e=>{ const t=e.touches[0]; touch.current={x:t.clientX,y:t.clientY}; };
- const onTE = e=>{
-  if(!touch.current) return;
-  const t=e.changedTouches[0]; const dx=t.clientX-touch.current.x; const dy=t.clientY-touch.current.y; touch.current=null;
-  if(Math.abs(dx)>50 && Math.abs(dx)>Math.abs(dy)) { dx<0 ? next() : prev(); }
-  else if(dy>100 && Math.abs(dy)>Math.abs(dx)) onClose();
- };
- useEffect(()=>{
-  if(st.video) return;
-  const t = setInterval(()=>setP(x=>x+2),100);
-  return ()=>clearInterval(t);
- },[g,i]);
- useEffect(()=>{ if(p>=100 && !st.video) next(); },[p]);
- useEffect(()=>{
-  const k = e=>{ if(e.key==='Escape') onClose(); if(e.key==='ArrowRight') next(); if(e.key==='ArrowLeft') prev(); };
-  window.addEventListener('keydown',k);
-  return ()=>window.removeEventListener('keydown',k);
- });
- return html`<div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center" onClick=${onClose}>
-  <div className="relative w-full h-full md:max-w-[420px] md:h-[90vh]" onClick=${e=>e.stopPropagation()}>
-   ${canPrev && html`<button onClick=${prev} aria-label="Anterior" className="hidden md:flex absolute top-1/2 -translate-y-1/2 -left-16 w-12 h-12 items-center justify-center rounded-full bg-black text-white border-2 border-white hover:bg-[#e63946] text-2xl font-black leading-none">‹</button>`}
-   <button onClick=${next} aria-label="Siguiente" className="hidden md:flex absolute top-1/2 -translate-y-1/2 -right-16 w-12 h-12 items-center justify-center rounded-full bg-black text-white border-2 border-white hover:bg-[#e63946] text-2xl font-black leading-none">›</button>
-  <div className="absolute inset-0 bg-[#111] overflow-hidden md:border-4 md:border-white" style=${{touchAction:'pan-y'}} onTouchStart=${onTS} onTouchEnd=${onTE}>
-   ${st.video
-    ? html`<video key=${st.id} src=${st.video} poster=${st.img} muted=${muted} autoPlay playsInline preload="auto" className="absolute inset-0 w-full h-full object-cover bg-black" onLoadedData=${e=>{ const v=e.target; const pr=v.play(); if(pr&&pr.catch) pr.catch(()=>{ v.muted=true; setMuted(true); v.play().catch(()=>{}); }); }} onTimeUpdate=${e=>setP((e.target.currentTime/(e.target.duration||1))*100)} onEnded=${next}></video>`
-    : st.img
-    ? html`<img src=${st.img} alt=${sk.name} className="absolute inset-0 w-full h-full object-cover"/>`
-    : html`<div className="absolute inset-0 grain" style=${{background:`linear-gradient(160deg,hsl(${sk.hue} 70% 28%),#0a0a0a 80%)`}}><div className="absolute inset-0 opacity-30" style=${{background:`repeating-linear-gradient(-30deg,hsl(${sk.hue} 80% 50%) 0 14px,transparent 14px 40px)`}}></div></div>`}
-   <div className="absolute inset-0" style=${{background:'linear-gradient(to top,rgba(0,0,0,.8),transparent 45%,rgba(0,0,0,.5))'}}></div>
-   <div className="absolute inset-0 flex">
-    <div className="w-1/3 h-full cursor-pointer" onClick=${prev}></div>
-    <div className="w-2/3 h-full cursor-pointer" onClick=${next}></div>
-   </div>
-   <div className="absolute top-3 left-3 right-3 flex gap-1 pointer-events-none">
-    ${items.map((x,n)=>html`<div key=${x.id} className="h-1 flex-1 bg-white/30"><div className="h-full bg-white" style=${{width:(n<i?100:n===i?Math.min(p,100):0)+'%'}}></div></div>`)}
-   </div>
-   <div className="absolute top-7 left-3 right-3 flex items-center justify-between">
-    <div className="body font-bold text-sm text-white" style=${{textShadow:'1px 1px 0 #000'}}>${sk.name} · ${(st.tag||'Highlight').toUpperCase()}</div>
-    <div className="flex items-center gap-2 relative z-10">
-     ${st.video && html`<button onClick=${()=>setMuted(m=>!m)} className="bg-black text-white border-2 border-white px-2 py-1 text-[11px] font-black body tracking-wide">${muted?'SIN SONIDO':'CON SONIDO'}</button>`}
-     <button onClick=${onClose} className="bg-black text-white border-2 border-white p-1" aria-label="Cerrar"><${Ic} d=${I.x} size=${16}/></button>
-    </div>
-   </div>
-   <div className="absolute bottom-24 left-4 right-4 pointer-events-none">
-    <div className="marker text-[#f1c40f] text-xl leading-none mb-1">"${sk.nick}"</div>
-    <div className="anton uppercase text-6xl leading-none" style=${{textShadow:'4px 4px 0 #000'}}>${st.title||st.label}</div>
-    ${st.sub && html`<div className="body font-black uppercase text-sm mt-3" style=${{textShadow:'1px 1px 0 #000'}}>${st.sub}</div>`}
-    <div className="body text-xs text-gray-300" style=${{textShadow:'1px 1px 0 #000'}}>${st.tag||'Highlight'} · ${sk.name}</div>
-   </div>
-   ${st.ig && html`<a href=${st.ig} target="_blank" rel="noopener noreferrer" className="absolute bottom-6 right-4 z-10 text-xs font-black bg-white text-black px-2 py-1 border-2 border-black">VER EN INSTAGRAM ↗</a>`}
-  </div>
-  </div>
- </div>`;
-};
-
-const Stories = () => {
- const [open,setOpen] = useState(null);
- const skaters = [...new Set(STORIES.map(x=>x.sk))];
- return html`<section className="mb-8">
-  <h3 className="anton text-3xl uppercase mb-3 flex items-center gap-3"><span className="bg-[#f1c40f] text-black px-2">STORIES</span><span className="w-8 h-8 rounded-lg flex items-center justify-center text-white" style=${{background:IGG}}><${Ic} d=${I.cam} size=${18}/></span> LO ÚLTIMO DEL CREW</h3>
-  <div className="flex gap-4 overflow-x-auto pb-3 pt-2">
-   ${skaters.map(id=>{
-    const items = STORIES.filter(x=>x.sk===id);
-    const st = items[0];
-    const sk = skOf(id);
-    const handle = HANDLES[id];
-    return html`<div key=${id} onClick=${()=>setOpen(skaters.indexOf(id))} className="shrink-0 w-[84px] text-center cursor-pointer">
-     <div className="relative mx-auto w-[80px] h-[80px] rounded-full p-[3px]" style=${{background:IGG}}>
-      <div className="w-full h-full rounded-full border-[3px] border-[#111] overflow-hidden relative flex items-center justify-center grain" style=${{background:`linear-gradient(135deg,hsl(${sk.hue} 70% 28%),#0a0a0a 80%)`}}>
-       ${st.img && html`<img src=${st.img} alt=${sk.name} className="absolute inset-0 w-full h-full object-cover" style=${{objectPosition:'50% 62%'}}/>`}
-       ${!st.img && html`<span className="relative anton uppercase leading-none text-[11px] px-1" style=${{textShadow:'1px 1px 0 #000'}}>${st.label}</span>`}
-      </div>
-      <span className="absolute -top-1 -right-1 w-6 h-6 rounded-full border-2 border-[#111] flex items-center justify-center text-white" style=${{background:IGG}}><${Ic} d=${I.cam} size=${12}/></span>
-     </div>
-     <div className="anton uppercase text-sm mt-3 leading-none">${sk.name}</div>
-     <div className="body text-[10px] text-gray-500 min-h-[14px] truncate">${handle?'@'+handle:''}</div>
-    </div>`;
-   })}
-  </div>
-  ${open!==null && html`<${StoryViewer} key=${'v'+open} groups=${skaters.map(sid=>STORIES.filter(x=>x.sk===sid))} start=${open} onClose=${()=>setOpen(null)}/>`}
- </section>`;
 };
 
 /* ---------- HERO ---------- */
@@ -307,6 +191,65 @@ const Roster = ({filter,setFilter,onProfile}) => {
    </div>
   </div>`}
  </section>`;
+};
+
+/* ---------- STORIES ---------- */
+const Stories = ({onOpen}) => html`<section className="mb-6">
+ <h3 className="anton text-xl uppercase mb-2 flex items-center gap-2"><span className="bg-[#f1c40f] text-black px-2">STORIES</span><span className="w-7 h-7 rounded-md border-2 border-black flex items-center justify-center text-white" style=${{background:IG_BG}}><${IgLogo} size=${16}/></span> LO ÚLTIMO DEL CREW</h3>
+ <div className="flex gap-4 overflow-x-auto pb-3">
+  ${SKATERS.filter(k=>k.hl||k.hlClips).map(k=>html`<button key=${'hl'+k.id} onClick=${()=>k.hlClips?onOpen({items:hlItems(k),start:0}):window.open(k.hl,'_blank','noopener')} className="shrink-0 flex flex-col items-center w-20 md:w-24">
+   <div className="p-[3px] rounded-full" style=${{background:IG_BG}}>
+    ${k.hlCover ? html`<div className="relative w-[68px] h-[68px] md:w-20 md:h-20 rounded-full border-4 border-black overflow-hidden" style=${{background:`url(${k.hlCover}) center/cover,#111`}}></div>` : html`<div className="w-[68px] h-[68px] md:w-20 md:h-20 rounded-full border-4 border-black flex flex-col items-center justify-center gap-0.5 text-center anton text-[10px] leading-none uppercase grain text-white" style=${{background:`linear-gradient(135deg,hsl(${k.hue} 70% 32%),#0a0a0a)`}}><${IgLogo} size=${20}/>HIGHLIGHT</div>`}
+   </div>
+   <div className="anton uppercase text-sm mt-2">${k.name}</div>
+   <span className="body text-[10px] text-gray-400">${igUser(k.ig)}</span>
+  </button>`)}
+  ${LATEST.map((v,i)=>{const k=skOf(v.sk);const h=igUser(k.ig);return html`<div key=${v.id} className="shrink-0 flex flex-col items-center w-20 md:w-24">
+   <div className="relative">
+    <button onClick=${()=>onOpen({items:LATEST,start:i})} className="relative block p-[3px] rounded-full" style=${{background:i<3?'conic-gradient(#f1c40f,#e63946,#f1c40f)':'#555'}}>
+     <div className="w-[68px] h-[68px] md:w-20 md:h-20 rounded-full border-4 border-black flex items-center justify-center text-center anton text-[11px] md:text-xs leading-tight uppercase p-1 grain" style=${{background:`linear-gradient(135deg,hsl(${k.hue} 70% 32%),#0a0a0a)`}}>${v.short}</div>
+     ${i<3 && html`<span className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-[#e63946] text-black text-[9px] font-black body px-1.5 border-2 border-black">NUEVO</span>`}
+    </button>
+    ${k.ig && html`<a href=${k.ig} target="_blank" rel="noopener noreferrer" title=${h} className="absolute -top-1 -right-1 w-6 h-6 rounded-full border-2 border-black flex items-center justify-center text-white" style=${{background:IG_BG}}><${IgLogo} size=${14}/></a>`}
+   </div>
+   <div className="anton uppercase text-sm mt-2">${k.name}</div>
+   ${h && html`<a href=${k.ig} target="_blank" rel="noopener noreferrer" className="body text-[10px] text-gray-400 hover:text-[#f1c40f] break-all text-center leading-tight">${h}</a>`}
+  </div>`})}
+ </div>
+</section>`;
+
+const StoryViewer = ({items,start,onClose,onWatch}) => {
+ const [i,setI] = useState(start);
+ const [p,setP] = useState(0);
+ const [mute,setMute] = useState(true);
+ const v = items[i]; const k = skOf(v.sk);
+ const next = () => { if(i<items.length-1){setI(i+1);setP(0)} else onClose() };
+ const prev = () => { if(i>0){setI(i-1);setP(0)} else setP(0) };
+ useEffect(()=>{if(v.clip) return;const t=setInterval(()=>setP(x=>x+2),100);return ()=>clearInterval(t)},[i]);
+ useEffect(()=>{ if(p>=100&&!v.clip) next() },[p]);
+ return html`<div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-2" onClick=${onClose}>
+  <div className="relative w-full max-w-[380px] aspect-[9/16] max-h-[92vh] border-4 border-white hard-r overflow-hidden grain flex flex-col justify-between" style=${{background:`linear-gradient(160deg,hsl(${k.hue} 75% 35%),#0a0a0a 75%)`}} onClick=${e=>e.stopPropagation()}>
+   <div className="absolute inset-0 opacity-25" style=${{background:`repeating-linear-gradient(-30deg,hsl(${k.hue} 80% 55%) 0 16px,transparent 16px 46px)`}}></div>
+   ${v.clip && html`<video key=${v.id} src=${v.clip} poster=${v.poster} className="absolute inset-0 w-full h-full object-cover" autoPlay muted=${mute} playsInline onTimeUpdate=${e=>setP(e.target.currentTime/(e.target.duration||1)*100)} onEnded=${next}></video>`}
+   ${v.clip && html`<div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/40"></div>`}
+   <div className="absolute inset-0 flex"><div className="w-1/3" onClick=${prev}></div><div className="w-2/3" onClick=${next}></div></div>
+   <div className="relative z-10 p-3 pointer-events-none">
+    <div className="flex gap-1">${items.map((_,j)=>html`<div key=${j} className="h-1 flex-1 bg-white/30"><div className="h-full bg-white" style=${{width:(j<i?100:j===i?Math.min(p,100):0)+'%'}}></div></div>`)}</div>
+    <div className="flex items-center justify-between mt-3 body text-xs font-bold"><span>${k.name} · ${v.date}</span><div className="flex gap-2 pointer-events-auto">${v.clip && html`<button onClick=${()=>setMute(!mute)} className="border-2 border-white px-1.5 text-[10px] font-black">${mute?'SIN SONIDO':'SONIDO ON'}</button>`}<button onClick=${onClose} className="border-2 border-white p-0.5"><${Ic} d=${I.x} size=${16}/></button></div></div>
+   </div>
+   <div className="relative z-10 px-4 pointer-events-none">
+    <div className="marker text-[#f1c40f] text-xl">"${k.nick}"</div>
+    <div className="anton text-5xl uppercase leading-none" style=${{textShadow:'4px 4px 0 #000'}}>${v.short}</div>
+    <div className="body text-sm mt-3 font-bold">${v.title}</div>
+    <div className="body text-xs text-gray-300 mt-1">${v.spot}${v.dur?' · '+v.dur:''}</div>
+   </div>
+   <div className="relative z-10 p-3 flex flex-wrap gap-2 pointer-events-none">
+    ${!v.hlOnly && html`<button onClick=${()=>onWatch(v.id)} className="pointer-events-auto anton uppercase tracking-wider bg-[#e63946] text-white px-4 py-2 border-4 border-black hard">▶ VER VIDEO</button>`}
+    ${k.hl && html`<a href=${k.hl} target="_blank" rel="noopener noreferrer" className="pointer-events-auto anton uppercase tracking-wider text-white px-4 py-2 border-4 border-black hard" style=${{background:IG_BG}}>HIGHLIGHT ↗</a>`}
+    ${(v.ig||k.ig) && html`<a href=${v.ig||k.ig} target="_blank" rel="noopener noreferrer" className="pointer-events-auto anton uppercase tracking-wider bg-white text-black px-4 py-2 border-4 border-black hard">INSTAGRAM ↗</a>`}
+   </div>
+  </div>
+ </div>`;
 };
 
 /* ---------- CARD ---------- */
@@ -399,6 +342,7 @@ const App = () => {
  const [activeId,setActiveId] = useState(1);
  const [liked,setLiked] = useState({});
  const [profile,setProfile] = useState(null);
+ const [story,setStory] = useState(null);
  const list = useMemo(()=>filter==='all'?VIDEOS:VIDEOS.filter(v=>v.sk===filter),[filter]);
  const active = VIDEOS.find(v=>v.id===activeId);
  const likes = v => v.likes + (liked[v.id]?1:0);
@@ -413,7 +357,7 @@ const App = () => {
   <${Header} onNav=${nav}/>
   <main className="max-w-7xl mx-auto px-4 py-6 grid lg:grid-cols-[1fr_320px] gap-8">
    <div>
-    <${Stories}/>
+    <${Stories} onOpen=${setStory}/>
     <${Hero} v=${active} likes=${likes(active)} liked=${!!liked[active.id]} onLike=${()=>toggle(active.id)} onProfile=${setProfile}/>
     <${Roster} filter=${filter} setFilter=${setFilter} onProfile=${setProfile}/>
     <section id="grid" className="mt-8">
@@ -429,6 +373,7 @@ const App = () => {
    <div className="flex justify-center mb-2"><${Skull} size=${36}/></div>
    CREW ARCHIVES © 2026 — SKATE AND DESTROY. Prototipo inspirado en la estética de las revistas de skate.
   </footer>
+  ${story!==null && html`<${StoryViewer} items=${story.items} start=${story.start} onClose=${()=>setStory(null)} onWatch=${id=>{setStory(null);pick(id)}}/>`}
   ${profile && html`<${Profile} id=${profile} onClose=${()=>setProfile(null)} onFilter=${setFilter}/>`}
  </div>`;
 };
