@@ -1,16 +1,22 @@
 CREW ARCHIVES — estructura del proyecto
 
 crew-archives/
-  index.html          <- toda la página (React + Tailwind por CDN)
+  index.html           <- toda la página (React + Tailwind por CDN)
+  package.json         <- solo para poder usar:  npm run dev  (abre http://localhost:5173)
   media/
-    droppa/           droppa-1.mp4 + droppa-1.jpg ... droppa-6
-    diego/            diego-1.mp4  + diego-1.jpg  ... diego-6
+    crew-foto.jpg      <- foto del crew (portada del video destacado)
+    droppa/            droppa-1.mp4 + droppa-1.jpg ... droppa-6
+    diego/             diego-1.mp4  + diego-1.jpg  ... diego-6
 
-Cómo agregar clips a un skater:
-  1. Crea media/<skater>/ y pon <skater>-1.mp4 ... (videos verticales, H.264, livianos)
-  2. Pon al lado <skater>-1.jpg ... (imagen previa, mismo nombre). El -1.jpg es la portada del círculo.
-  3. En index.html, en SKATERS, al skater agrégale:
+Ver en el computador:  npm run dev     (o doble clic en index.html)
+
+Foto del crew: media/crew-foto.jpg (también acepta .png / .jpeg). Si no está, se ve el diseño sin foto.
+
+Agregar clips a un skater:
+  1. Crea media/<skater>/ con <skater>-1.mp4 ... y <skater>-1.jpg ... (mismo nombre)
+  2. En index.html, en SKATERS, al skater agrégale:
      hlCover:'media/<skater>/<skater>-1.jpg',
-     hlClips:['media/<skater>/<skater>-1.mp4', ... ]
+     hlClips:['media/<skater>/<skater>-1.mp4', ...]
 
-Para subir: sube index.html y la carpeta media/ al repositorio de GitHub (Vercel se actualiza solo).
+Compatible con iPhone (iOS 15 o más nuevo): probado de 320 a 440 px de ancho, vertical y horizontal.
+Para subir: sube index.html, package.json y la carpeta media/ a GitHub (Vercel se actualiza solo).

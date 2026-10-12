@@ -10,7 +10,7 @@
 <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/htm@3.1.1/dist/htm.js"></script>
 <style>
-:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#111;--red:#e63946;--yel:#f1c40f}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px);--bg:#111;--red:#e63946;--yel:#f1c40f}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{background:#111;color:#fff;font-family:Impact,'Arial Narrow',sans-serif;margin:0}
 .anton{font-family:'Anton',Impact,sans-serif;letter-spacing:.02em}
@@ -22,8 +22,19 @@ body{background:#111;color:#fff;font-family:Impact,'Arial Narrow',sans-serif;mar
 .tape{transform:rotate(-3deg)}
 .logo{font-family:'Archivo','Arial Black',Impact,sans-serif;font-style:italic;font-weight:900;font-stretch:125%;font-variation-settings:'wdth' 125;letter-spacing:-.03em;line-height:.95;text-transform:uppercase;font-size:min(54px,calc((100vw - 92px)/11.6));width:max-content;white-space:nowrap;background:repeating-linear-gradient(0deg,#fff 0 3px,#c9c9c9 3px 4px);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(2px 2px 0 #000)}
 .logo .amp{background:repeating-linear-gradient(0deg,#e63946 0 3px,#a8202c 3px 4px);-webkit-background-clip:text;background-clip:text;color:transparent;font-size:1.05em;margin:0 -.04em}
-.tag{display:inline-block;background:#f1c40f;color:#111;font:700 clamp(9px,2.2vw,12px)/1 'Courier New',monospace;letter-spacing:.12em;padding:4px 8px;border:2px solid #111;text-transform:uppercase;margin-top:6px;box-shadow:2px 2px 0 #000}
+.tag{display:inline-block;background:#f1c40f;color:#111;font:700 11px/1 'Courier New',monospace;font:700 clamp(9px,2.2vw,12px)/1 'Courier New',monospace;letter-spacing:.12em;padding:4px 8px;border:2px solid #111;text-transform:uppercase;margin-top:6px;box-shadow:2px 2px 0 #000}
 @media(min-width:768px){.logo{font-size:min(54px,calc((100vw - 112px)/11.6))}}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+button,a{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.ov{padding:max(8px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left));overscroll-behavior:contain}
+.story-card{width:100%;max-width:380px;height:100%;max-height:675px;touch-action:pan-y}
+@media(max-height:500px){header.sticky{position:static}}
+@media(max-height:420px){.st-big{font-size:1.75rem!important}.st-sub{display:none!important}.st-actions{padding:6px 10px!important;gap:6px!important}.st-actions>*{padding:3px 10px!important;font-size:13px!important;border-width:3px!important}}
+@supports not (aspect-ratio:1/1){
+ .aspect-video{height:0;padding-top:56.25%}
+ .aspect-square{height:0;padding-top:100%}
+ .aspect-\[3\/4\]{min-height:320px}
+}
 </style>
 </head>
 <body>
@@ -61,6 +72,8 @@ const LATEST = [...VIDEOS].sort((a,b)=>dateOf(b)-dateOf(a));
 const hlItems = k => (k.hlClips||[]).map((c,n)=>({id:'hl-'+k.id+'-'+n,sk:k.id,short:'TRICK '+(n+1),title:k.name.toUpperCase()+' TRICK '+(n+1),spot:'Highlight · '+k.name,dur:'',date:'HIGHLIGHT',clip:c,poster:/\.mp4$/.test(c)?c.replace(/\.mp4$/,'.jpg'):undefined,hlOnly:true}));
 const igEmbed = u => u.split('?')[0].replace(/\/$/,'')+'/embed';
 
+const CREW_FOTOS = ['media/crew-foto.jpg','crew-foto.jpg','media/crew-foto.png','media/crew-foto.jpeg'];
+
 /* ---------- ICONS ---------- */
 const Ic = ({d,size=20,fill='none'}) => html`<svg width=${size} height=${size} viewBox="0 0 24 24" fill=${fill} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" dangerouslySetInnerHTML=${{__html:d}}/>`;
 const I = {
@@ -93,9 +106,13 @@ const igUser = u => u ? '@'+u.split('instagram.com/')[1].split(/[\/?]/)[0] : nul
 /* ---------- THUMB ---------- */
 const Thumb = ({v,big,playing,progress}) => {
  const s = skOf(v.sk);
+ const [fi,setFi] = useState(0);
+ const [ok,setOk] = useState(false);
+ const foto = big && fi<CREW_FOTOS.length ? CREW_FOTOS[fi] : null;
  return html`<div className=${'relative w-full overflow-hidden grain '+(big?'aspect-video':'aspect-video')} style=${{background:`linear-gradient(135deg,hsl(${s.hue} 70% 22%),#0a0a0a 70%)`}}>
   <div className="absolute inset-0 opacity-30" style=${{background:`repeating-linear-gradient(-30deg,hsl(${s.hue} 80% 50%) 0 14px,transparent 14px 40px)`}}></div>
-  <div className=${'absolute left-3 bottom-3 right-3 anton uppercase leading-none text-white '+(big?'text-3xl md:text-5xl':'text-lg')} style=${{textShadow:'3px 3px 0 #000'}}>${s.nick}</div>
+  ${foto && html`<img src=${foto} alt="Crew" onLoad=${()=>setOk(true)} onError=${()=>setFi(fi+1)} className="absolute inset-0 w-full h-full object-cover"/>`}
+  ${!(foto&&ok) && html`<div className=${'absolute left-3 bottom-3 right-3 anton uppercase leading-none text-white '+(big?'text-3xl md:text-5xl':'text-lg')} style=${{textShadow:'3px 3px 0 #000'}}>${s.nick}</div>`}
   <div className="absolute top-2 left-2 bg-[#f1c40f] text-black text-[10px] font-black px-2 py-0.5 body tape border-2 border-black">${v.tag}</div>
   ${big && html`<div className="absolute inset-x-0 bottom-0 h-1.5 bg-black/60"><div className="h-full bg-[#e63946]" style=${{width:progress+'%'}}></div></div>`}
   ${big && playing && html`<div className="absolute top-3 right-3 flex items-center gap-1 text-xs body font-bold bg-black/70 px-2 py-1"><span className="w-2 h-2 rounded-full bg-[#e63946] animate-pulse"></span> REPRODUCIENDO</div>`}
@@ -197,14 +214,14 @@ const Roster = ({filter,setFilter,onProfile}) => {
 const Stories = ({onOpen}) => html`<section className="mb-6">
  <h3 className="anton text-xl uppercase mb-2 flex items-center gap-2"><span className="bg-[#f1c40f] text-black px-2">STORIES</span><span className="w-7 h-7 rounded-md border-2 border-black flex items-center justify-center text-white" style=${{background:IG_BG}}><${IgLogo} size=${16}/></span> LO ÚLTIMO DEL CREW</h3>
  <div className="flex gap-4 overflow-x-auto pb-3">
-  ${SKATERS.filter(k=>k.hl||k.hlClips).map(k=>html`<button key=${'hl'+k.id} onClick=${()=>k.hlClips?onOpen({items:hlItems(k),start:0}):window.open(k.hl,'_blank','noopener')} className="shrink-0 flex flex-col items-center w-20 md:w-24">
+  ${SKATERS.filter(k=>k.hl||k.hlClips).map(k=>html`<button key=${'hl'+k.id} onClick=${()=>k.hlClips?onOpen({items:hlItems(k),start:0}):window.open(k.hl,'_blank','noopener')} className="shrink-0 flex flex-col items-center w-[88px] md:w-24">
    <div className="p-[3px] rounded-full" style=${{background:IG_BG}}>
     ${k.hlCover ? html`<div className="relative w-[68px] h-[68px] md:w-20 md:h-20 rounded-full border-4 border-black overflow-hidden" style=${{background:`url(${k.hlCover}) center/cover,#111`}}></div>` : html`<div className="w-[68px] h-[68px] md:w-20 md:h-20 rounded-full border-4 border-black flex flex-col items-center justify-center gap-0.5 text-center anton text-[10px] leading-none uppercase grain text-white" style=${{background:`linear-gradient(135deg,hsl(${k.hue} 70% 32%),#0a0a0a)`}}><${IgLogo} size=${20}/>HIGHLIGHT</div>`}
    </div>
    <div className="anton uppercase text-sm mt-2">${k.name}</div>
    <span className="body text-[10px] text-gray-400">${igUser(k.ig)}</span>
   </button>`)}
-  ${LATEST.map((v,i)=>{const k=skOf(v.sk);const h=igUser(k.ig);return html`<div key=${v.id} className="shrink-0 flex flex-col items-center w-20 md:w-24">
+  ${LATEST.map((v,i)=>{const k=skOf(v.sk);const h=igUser(k.ig);return html`<div key=${v.id} className="shrink-0 flex flex-col items-center w-[88px] md:w-24">
    <div className="relative">
     <button onClick=${()=>onOpen({items:LATEST,start:i})} className="relative block p-[3px] rounded-full" style=${{background:i<3?'conic-gradient(#f1c40f,#e63946,#f1c40f)':'#555'}}>
      <div className="w-[68px] h-[68px] md:w-20 md:h-20 rounded-full border-4 border-black flex items-center justify-center text-center anton text-[11px] md:text-xs leading-tight uppercase p-1 grain" style=${{background:`linear-gradient(135deg,hsl(${k.hue} 70% 32%),#0a0a0a)`}}>${v.short}</div>
@@ -222,15 +239,24 @@ const StoryViewer = ({items,start,onClose,onWatch}) => {
  const [i,setI] = useState(start);
  const [p,setP] = useState(0);
  const [mute,setMute] = useState(true);
+ const vref = el => { if(!el) return; if(!el.dataset.init){el.dataset.init='1';el.defaultMuted=true;el.muted=mute;const pr=el.play();if(pr&&pr.catch)pr.catch(()=>{})} else {el.muted=mute} };
  const v = items[i]; const k = skOf(v.sk);
  const next = () => { if(i<items.length-1){setI(i+1);setP(0)} else onClose() };
  const prev = () => { if(i>0){setI(i-1);setP(0)} else setP(0) };
  useEffect(()=>{if(v.clip) return;const t=setInterval(()=>setP(x=>x+2),100);return ()=>clearInterval(t)},[i]);
  useEffect(()=>{ if(p>=100&&!v.clip) next() },[p]);
- return html`<div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-2" onClick=${onClose}>
-  <div className="relative w-full max-w-[380px] aspect-[9/16] max-h-[92vh] border-4 border-white hard-r overflow-hidden grain flex flex-col justify-between" style=${{background:`linear-gradient(160deg,hsl(${k.hue} 75% 35%),#0a0a0a 75%)`}} onClick=${e=>e.stopPropagation()}>
+ const tx = React.useRef({x:0,y:0});
+ useEffect(()=>{const o=document.body.style.overflow;document.body.style.overflow='hidden';return ()=>{document.body.style.overflow=o}},[]);
+ useEffect(()=>{
+  const h = e => { if(e.key==='ArrowRight') next(); else if(e.key==='ArrowLeft') prev(); else if(e.key==='Escape') onClose() };
+  window.addEventListener('keydown',h);
+  return ()=>window.removeEventListener('keydown',h);
+ },[i]);
+ return html`<div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center ov" onClick=${onClose}>
+  <button onClick=${e=>{e.stopPropagation();prev()}} disabled=${i===0} aria-label="Anterior" className="hidden md:flex shrink-0 mr-4 w-12 h-12 items-center justify-center bg-[#f1c40f] text-black border-4 border-black hard disabled:opacity-30"><${Ic} d=${'<path d="M15 18l-6-6 6-6"/>'} size=${28}/></button>
+  <div className="relative story-card border-4 border-white hard-r overflow-hidden grain flex flex-col justify-between" style=${{background:`linear-gradient(160deg,hsl(${k.hue} 75% 35%),#0a0a0a 75%)`}} onClick=${e=>e.stopPropagation()} onTouchStart=${e=>{const t=e.touches[0];tx.current={x:t.clientX,y:t.clientY}}} onTouchEnd=${e=>{const t=e.changedTouches[0];const dx=t.clientX-tx.current.x,dy=t.clientY-tx.current.y;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)){dx<0?next():prev()}}}>
    <div className="absolute inset-0 opacity-25" style=${{background:`repeating-linear-gradient(-30deg,hsl(${k.hue} 80% 55%) 0 16px,transparent 16px 46px)`}}></div>
-   ${v.clip && html`<video key=${v.id} src=${v.clip} poster=${v.poster} className="absolute inset-0 w-full h-full object-cover" autoPlay muted=${mute} playsInline onTimeUpdate=${e=>setP(e.target.currentTime/(e.target.duration||1)*100)} onEnded=${next}></video>`}
+   ${v.clip && html`<video key=${v.id} ref=${vref} src=${v.clip} poster=${v.poster} className="absolute inset-0 w-full h-full object-cover" autoPlay muted=${mute} playsInline onTimeUpdate=${e=>setP(e.target.currentTime/(e.target.duration||1)*100)} onEnded=${next}></video>`}
    ${v.clip && html`<div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/40"></div>`}
    <div className="absolute inset-0 flex"><div className="w-1/3" onClick=${prev}></div><div className="w-2/3" onClick=${next}></div></div>
    <div className="relative z-10 p-3 pointer-events-none">
@@ -239,16 +265,17 @@ const StoryViewer = ({items,start,onClose,onWatch}) => {
    </div>
    <div className="relative z-10 px-4 pointer-events-none">
     <div className="marker text-[#f1c40f] text-xl">"${k.nick}"</div>
-    <div className="anton text-5xl uppercase leading-none" style=${{textShadow:'4px 4px 0 #000'}}>${v.short}</div>
-    <div className="body text-sm mt-3 font-bold">${v.title}</div>
-    <div className="body text-xs text-gray-300 mt-1">${v.spot}${v.dur?' · '+v.dur:''}</div>
+    <div className="anton text-5xl st-big uppercase leading-none" style=${{textShadow:'4px 4px 0 #000'}}>${v.short}</div>
+    <div className="body text-sm mt-3 font-bold st-sub">${v.title}</div>
+    <div className="body text-xs text-gray-300 mt-1 st-sub">${v.spot}${v.dur?' · '+v.dur:''}</div>
    </div>
-   <div className="relative z-10 p-3 flex flex-wrap gap-2 pointer-events-none">
+   <div className="relative z-10 p-3 flex flex-wrap gap-2 st-actions pointer-events-none">
     ${!v.hlOnly && html`<button onClick=${()=>onWatch(v.id)} className="pointer-events-auto anton uppercase tracking-wider bg-[#e63946] text-white px-4 py-2 border-4 border-black hard">▶ VER VIDEO</button>`}
     ${k.hl && html`<a href=${k.hl} target="_blank" rel="noopener noreferrer" className="pointer-events-auto anton uppercase tracking-wider text-white px-4 py-2 border-4 border-black hard" style=${{background:IG_BG}}>HIGHLIGHT ↗</a>`}
     ${(v.ig||k.ig) && html`<a href=${v.ig||k.ig} target="_blank" rel="noopener noreferrer" className="pointer-events-auto anton uppercase tracking-wider bg-white text-black px-4 py-2 border-4 border-black hard">INSTAGRAM ↗</a>`}
    </div>
   </div>
+  <button onClick=${e=>{e.stopPropagation();next()}} aria-label="Siguiente" className="hidden md:flex shrink-0 ml-4 w-12 h-12 items-center justify-center bg-[#f1c40f] text-black border-4 border-black hard"><${Ic} d=${'<path d="M9 18l6-6-6-6"/>'} size=${28}/></button>
  </div>`;
 };
 
@@ -271,8 +298,8 @@ const Sidebar = () => {
  const [sent,setSent] = useState(false);
  const [f,setF] = useState({name:'',link:'',trick:''});
  const set = k => e => setF({...f,[k]:e.target.value});
- const inp = 'w-full bg-black border-2 border-[#555] px-2 py-1.5 text-sm text-white focus:outline-none focus:border-[#f1c40f]';
- return html`<aside className="space-y-6 body">
+ const inp = 'w-full bg-black border-2 border-[#555] px-2 py-1.5 text-base md:text-sm text-white focus:outline-none focus:border-[#f1c40f]';
+ return html`<aside className="space-y-6 body min-w-0">
   <div className="border-4 border-black bg-[#e63946] hard p-3 text-black">
    <div className="anton text-xl uppercase">COVER OF THE MONTH</div>
    <div className="aspect-[3/4] mt-2 border-4 border-black grain flex flex-col justify-between p-3 relative overflow-hidden" style=${{background:'linear-gradient(160deg,#f1c40f,#e63946 60%,#111)'}}>
@@ -308,8 +335,9 @@ const Sidebar = () => {
 const Profile = ({id,onClose,onFilter}) => {
  const s = skOf(id);
  const vids = VIDEOS.filter(v=>v.sk===id);
- return html`<div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-3 overflow-y-auto" onClick=${onClose}>
-  <div className="relative w-full max-w-2xl bg-[#161616] border-4 border-white hard-r body my-6" onClick=${e=>e.stopPropagation()}>
+ useEffect(()=>{const o=document.body.style.overflow;document.body.style.overflow='hidden';return ()=>{document.body.style.overflow=o}},[]);
+ return html`<div className="fixed inset-0 z-50 bg-black/80 flex justify-center ov overflow-y-auto" onClick=${onClose}>
+  <div className="relative w-full max-w-2xl bg-[#161616] border-4 border-white hard-r body my-auto" onClick=${e=>e.stopPropagation()}>
    <button onClick=${onClose} className="absolute -top-3 -right-3 bg-[#e63946] text-white border-4 border-black p-1"><${Ic} d=${I.x}/></button>
    <div className="p-5 grain" style=${{background:`linear-gradient(120deg,hsl(${s.hue} 70% 25%),#111)`}}>
     <div className="marker text-[#f1c40f] text-xl">"${s.nick}"</div>
@@ -355,8 +383,8 @@ const App = () => {
  };
  return html`<div className="min-h-screen">
   <${Header} onNav=${nav}/>
-  <main className="max-w-7xl mx-auto px-4 py-6 grid lg:grid-cols-[1fr_320px] gap-8">
-   <div>
+  <main className="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_320px] gap-8">
+   <div className="min-w-0">
     <${Stories} onOpen=${setStory}/>
     <${Hero} v=${active} likes=${likes(active)} liked=${!!liked[active.id]} onLike=${()=>toggle(active.id)} onProfile=${setProfile}/>
     <${Roster} filter=${filter} setFilter=${setFilter} onProfile=${setProfile}/>
