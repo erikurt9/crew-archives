@@ -23,12 +23,31 @@ body{background:#111;color:#fff;font-family:Impact,'Arial Narrow',sans-serif;mar
 .logo{font-family:'Archivo','Arial Black',Impact,sans-serif;font-style:italic;font-weight:900;font-stretch:125%;font-variation-settings:'wdth' 125;letter-spacing:-.03em;line-height:.95;text-transform:uppercase;font-size:min(54px,calc((100vw - 92px)/11.6));width:max-content;white-space:nowrap;background:repeating-linear-gradient(0deg,#fff 0 3px,#c9c9c9 3px 4px);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(2px 2px 0 #000)}
 .logo .amp{background:repeating-linear-gradient(0deg,#e63946 0 3px,#a8202c 3px 4px);-webkit-background-clip:text;background-clip:text;color:transparent;font-size:1.05em;margin:0 -.04em}
 .tag{display:inline-block;background:#f1c40f;color:#111;font:700 11px/1 'Courier New',monospace;font:700 clamp(9px,2.2vw,12px)/1 'Courier New',monospace;letter-spacing:.12em;padding:4px 8px;border:2px solid #111;text-transform:uppercase;margin-top:6px;box-shadow:2px 2px 0 #000}
-@media(min-width:768px){.logo{font-size:min(54px,calc((100vw - 112px)/11.6))}}
+@media(min-width:768px){.logo,.logo-g{font-size:min(54px,calc((100vw - 112px)/11.6))}}
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 button,a{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .ov{padding:max(8px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left));overscroll-behavior:contain}
 .story-card{width:100%;max-width:380px;height:100%;max-height:675px;touch-action:pan-y}
 @media(max-height:500px){header.sticky{position:static}}
+/* --- glitch del banner: ráfaga a los ~0.5 s y luego cada 3.6 s; también al tocar el banner --- */
+.glitch{position:relative;width:max-content}
+.logo-g{position:absolute;left:0;top:0;pointer-events:none;opacity:0;font-family:'Archivo','Arial Black',Impact,sans-serif;font-style:italic;font-weight:900;font-stretch:125%;font-variation-settings:'wdth' 125;letter-spacing:-.03em;line-height:.95;text-transform:uppercase;font-size:min(54px,calc((100vw - 92px)/11.6));width:max-content;white-space:nowrap}
+.logo-g .gamp{font-size:1.05em;margin:0 -.04em}
+.logo-g.g1{color:#00f0ff}
+.logo-g.g2{color:#ff2a3d}
+@keyframes gl-base{0%,13%,31%,100%{transform:none}14%{transform:translate(3px,0) skewX(-8deg)}17%{transform:translate(-4px,0) skewX(6deg)}20%{transform:translate(2px,1px)}23%{transform:translate(-3px,0) skewX(-5deg)}26%{transform:translate(2px,0) skewX(3deg)}29%{transform:none}}
+@keyframes gl-a{0%,13%,31%,100%{opacity:0}14%{opacity:.95;transform:translate(-6px,0);clip-path:inset(12% 0 58% 0)}17%{opacity:.95;transform:translate(5px,-1px);clip-path:inset(62% 0 8% 0)}20%{opacity:.95;transform:translate(-4px,1px);clip-path:inset(34% 0 38% 0)}23%{opacity:.95;transform:translate(6px,0);clip-path:inset(78% 0 4% 0)}26%{opacity:.95;transform:translate(-3px,0);clip-path:inset(20% 0 52% 0)}29%{opacity:0}}
+@keyframes gl-b{0%,14%,32%,100%{opacity:0}15%{opacity:.9;transform:translate(6px,1px);clip-path:inset(44% 0 30% 0)}18%{opacity:.9;transform:translate(-5px,0);clip-path:inset(6% 0 70% 0)}21%{opacity:.9;transform:translate(4px,-1px);clip-path:inset(70% 0 12% 0)}24%{opacity:.9;transform:translate(-6px,0);clip-path:inset(22% 0 50% 0)}27%{opacity:.9;transform:translate(3px,0);clip-path:inset(52% 0 28% 0)}30%{opacity:0}}
+@media(prefers-reduced-motion:no-preference){
+ .logo{animation:gl-base 3.6s steps(1,end) infinite}
+ .logo-g.g1{animation:gl-a 3.6s steps(1,end) infinite}
+ .logo-g.g2{animation:gl-b 3.6s steps(1,end) infinite}
+}
+/* al tocar el banner: una ráfaga (incluso con "reducir movimiento", porque la pide la persona) */
+.gl-now .logo{animation:gl-base 3.6s steps(1,end) -.5s 1}
+.gl-now .logo-g.g1{animation:gl-a 3.6s steps(1,end) -.5s 1}
+.gl-now .logo-g.g2{animation:gl-b 3.6s steps(1,end) -.5s 1}
+
 @media(max-height:420px){.st-big{font-size:1.75rem!important}.st-sub{display:none!important}.st-actions{padding:6px 10px!important;gap:6px!important}.st-actions>*{padding:3px 10px!important;font-size:13px!important;border-width:3px!important}}
 @supports not (aspect-ratio:1/1){
  .aspect-video{height:0;padding-top:56.25%}
@@ -123,15 +142,24 @@ const Thumb = ({v,big,playing,progress}) => {
 const NAV = ['VIDEOS','MAGAZINE','CREW / SKATERS','SPOTS','SHOP / MERCH'];
 const Header = ({onNav}) => {
  const [open,setOpen] = useState(false);
+ const [burst,setBurst] = useState(false);
+ const [gif,setGif] = useState(true);
+ const zap = () => { setBurst(true); setTimeout(()=>setBurst(false),750) };
  return html`<header className="border-b-4 border-[#e63946] bg-black sticky top-0 z-30" style=${{top:'env(safe-area-inset-top,0px)'}}>
   <div className="bg-[#f1c40f] text-black text-center text-xs body font-black py-1 tracking-widest">★ CREW ARCHIVES — NUEVA EDICIÓN Nº 07 YA ESTÁ AFUERA — PATINA O MUERE ★</div>
   <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
-   <div className="flex items-center gap-3 cursor-pointer min-w-0" onClick=${()=>window.scrollTo({top:0,behavior:'smooth'})}>
+   <div className="cursor-pointer min-w-0 w-full" onClick=${()=>{zap();window.scrollTo({top:0,behavior:'smooth'})}}>
+    ${gif ? html`<img src="media/banner-glitch.gif" width="1076" height="155" alt="Skate and Destroy — Local Crew Magazine Vol. I" onError=${()=>setGif(false)} className="block h-auto w-full max-w-[717px]" style=${{marginLeft:'calc(min(100%,717px) * -0.0167)'}}/>` : html`<div className="flex items-center gap-3 min-w-0">
     <div className="w-11 h-11 md:w-16 md:h-16 shrink-0 flex items-center justify-center" style=${{background:'repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 1px,transparent 1px 4px),#e8202a',border:'3px solid #7a0e14',boxShadow:'3px 3px 0 #000'}}><${SkullMark} size=${40}/></div>
     <div className="min-w-0">
-     <div className="logo">SKATE<span className="amp">${'&'}</span>DESTROY</div>
+     <div className=${'glitch'+(burst?' gl-now':'')}>
+      <div className="logo">SKATE<span className="amp">${'&'}</span>DESTROY</div>
+      <div className="logo-g g1" aria-hidden="true">SKATE<span className="gamp">${'&'}</span>DESTROY</div>
+      <div className="logo-g g2" aria-hidden="true">SKATE<span className="gamp">${'&'}</span>DESTROY</div>
+     </div>
      <div className="tag">LOCAL CREW MAGAZINE VOL. I</div>
     </div>
+   </div>`}
    </div>
   </div>
   <button onClick=${()=>setOpen(!open)} className="md:hidden w-full flex items-center justify-between anton uppercase tracking-widest text-lg px-4 py-2 bg-[#1a1a1a] border-t-2 border-[#333]"><span>MENÚ</span><${Ic} d=${open?I.x:I.menu}/></button>
