@@ -299,6 +299,12 @@ const StoryViewer = ({items,start,onClose,onWatch}) => {
  useEffect(()=>{if(v.clip) return;const t=setInterval(()=>setP(x=>x+2),100);return ()=>clearInterval(t)},[i]);
  useEffect(()=>{ if(p>=100&&!v.clip) next() },[p]);
  const tx = React.useRef({x:0,y:0});
+ const pre = React.useRef([]);
+ useEffect(()=>{
+  pre.current = [];
+  [1,2].forEach(d=>{const n=items[i+d]; if(n&&n.poster){const im=new Image(); im.src=n.poster; pre.current.push(im)}});
+  const nx=items[i+1]; if(nx&&nx.clip){const vv=document.createElement('video'); vv.preload='auto'; vv.muted=true; vv.src=nx.clip; try{vv.load()}catch(e){} pre.current.push(vv)}
+ },[i]);
  useEffect(()=>{const o=document.body.style.overflow;document.body.style.overflow='hidden';return ()=>{document.body.style.overflow=o}},[]);
  useEffect(()=>{
   const h = e => { if(e.key==='ArrowRight') next(); else if(e.key==='ArrowLeft') prev(); else if(e.key==='Escape') onClose() };
@@ -307,8 +313,8 @@ const StoryViewer = ({items,start,onClose,onWatch}) => {
  },[i]);
  return html`<div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center ov" onClick=${onClose}>
   <button onClick=${e=>{e.stopPropagation();prev()}} disabled=${i===0} aria-label="Anterior" className="hidden md:flex shrink-0 mr-4 w-12 h-12 items-center justify-center bg-[#f1c40f] text-black border-4 border-black hard disabled:opacity-30"><${Ic} d=${'<path d="M15 18l-6-6 6-6"/>'} size=${28}/></button>
-  <div className="relative story-card border-4 border-white hard-r overflow-hidden grain flex flex-col justify-between" style=${{background:`linear-gradient(160deg,hsl(${k.hue} 75% 35%),#0a0a0a 75%)`}} onClick=${e=>e.stopPropagation()} onTouchStart=${e=>{const t=e.touches[0];tx.current={x:t.clientX,y:t.clientY}}} onTouchEnd=${e=>{const t=e.changedTouches[0];const dx=t.clientX-tx.current.x,dy=t.clientY-tx.current.y;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)){dx<0?next():prev()}}}>
-   <div className="absolute inset-0 opacity-25" style=${{background:`repeating-linear-gradient(-30deg,hsl(${k.hue} 80% 55%) 0 16px,transparent 16px 46px)`}}></div>
+  <div className="relative story-card border-4 border-white hard-r overflow-hidden grain flex flex-col justify-between" style=${{background:v.clip?'#000':`linear-gradient(160deg,hsl(${k.hue} 75% 35%),#0a0a0a 75%)`}} onClick=${e=>e.stopPropagation()} onTouchStart=${e=>{const t=e.touches[0];tx.current={x:t.clientX,y:t.clientY}}} onTouchEnd=${e=>{const t=e.changedTouches[0];const dx=t.clientX-tx.current.x,dy=t.clientY-tx.current.y;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)){dx<0?next():prev()}}}>
+   ${!v.clip && html`<div className="absolute inset-0 opacity-25" style=${{background:`repeating-linear-gradient(-30deg,hsl(${k.hue} 80% 55%) 0 16px,transparent 16px 46px)`}}></div>`}
    ${v.clip && html`<video key=${v.id} ref=${vref} src=${v.clip} poster=${v.poster} className="absolute inset-0 w-full h-full object-cover" autoPlay muted=${mute} playsInline onTimeUpdate=${e=>setP(e.target.currentTime/(e.target.duration||1)*100)} onEnded=${next}></video>`}
    ${v.clip && html`<div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/40"></div>`}
    <div className="absolute inset-0 flex"><div className="w-1/3" onClick=${prev}></div><div className="w-2/3" onClick=${next}></div></div>
