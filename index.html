@@ -66,9 +66,9 @@ const html = htm.bind(React.createElement);
 const SKATERS = [
  {id:'raspu',ig:'https://www.instagram.com/juancamolina23/',name:'Raspu',nick:'EL PÁJARO',stance:'Regular',years:9,spot:'Skatepark Los Ángeles, Ricardo Vicuña',hue:350,
   favs:['Kickflip back lip','Frontside 180 nollie','Tre flip'],setup:{deck:'8.25" Maple 7-ply',trucks:'Independent 149',wheels:'54mm 99A',bearings:'Bones Reds'}},
- {id:'boris',ig:'',hlCover:'media/boris/boris-1.jpg',hlClips:['media/boris/boris-1.mp4','media/boris/boris-2.mp4','media/boris/boris-3.mp4','media/boris/boris-4.mp4'],hlInfo:[
+ {id:'boris',ig:'https://www.instagram.com/borisgaticarojas/',hlCover:'media/boris/boris-1.jpg',hlClips:['media/boris/boris-1.mp4','media/boris/boris-2.mp4','media/boris/boris-3.mp4','media/boris/boris-4.mp4'],hlInfo:[
   {short:'SLIDE',title:'SLIDE EN EL LEDGE',spot:'Skatepark · de noche',dur:'0:08'},
-  {short:'FLIP',title:'FLIP SOBRE EL LEDGE',spot:'Skatepark · de noche',dur:'0:04',by:'@tourpizza.la @lostangelesteam'},
+  {short:'FLIP',title:'FLIP SOBRE EL LEDGE',spot:'Skatepark · de noche',dur:'0:04',tags:'@tourpizza.la @lostangelesteam'},
   {short:'GRIND',title:'GRIND EN EL LEDGE',spot:'Skatepark · de noche',dur:'0:08'},
   {short:'LEDGE',title:'TRUCOS EN EL LEDGE',spot:'Skatepark · atardecer y noche',dur:'0:15'}
  ],name:'Boris',nick:'EL ZORRO',stance:'Goofy',years:6,spot:'Parque Ecuador',hue:45,
@@ -96,7 +96,7 @@ const SKATERS = [
   {short:'SESIÓN',title:'SESIÓN EN EL SKATEPARK',spot:'Skatepark · de noche',dur:'0:14'},
   {short:'LEDGE',title:'GRIND EN EL CANTERO',spot:'Plaza · de día',dur:'0:05'},
   {short:'GRIND',title:'GRIND EN EL BLOQUE',spot:'Calle · de noche',dur:'0:08'},
-  {short:'SESH',title:'ESTUVO WENA LA SESH',spot:'Skatepark · de noche',dur:'0:15',by:'@ivancifuentesvalen @ffffilips @ben.ja_dh'},
+  {short:'SESH',title:'ESTUVO WENA LA SESH',spot:'Skatepark · de noche',dur:'0:15',tags:'@ivancifuentesvalen @ffffilips @ben.ja_dh'},
   {short:'CALLE',title:'RODADA DE NOCHE',spot:'Calle · de noche',dur:'0:28',by:'@dr0pp4'},
   {short:'PLAZA',title:'LÍNEA POR LA PLAZA',spot:'Plaza del centro · de día',dur:'0:07',by:'@dr0pp4'},
   {short:'BOX',title:'SLIDE EN EL BOX',spot:'Skatepark · de noche',dur:'0:08'}
@@ -118,7 +118,7 @@ const skOf = id => SKATERS.find(s=>s.id===id);
 const MES={ENE:0,FEB:1,MAR:2,ABR:3,MAY:4,JUN:5,JUL:6,AGO:7,SEP:8,OCT:9,NOV:10,DIC:11};
 const dateOf = v => {const [d,m,y]=v.date.split(' ');return new Date(+y,MES[m],+d).getTime()};
 const LATEST = [...VIDEOS].sort((a,b)=>dateOf(b)-dateOf(a));
-const hlItems = k => (k.hlClips||[]).map((c,n)=>{const f=(k.hlInfo||[])[n]||{};return {id:'hl-'+k.id+'-'+n,sk:k.id,short:f.short||'TRICK '+(n+1),title:f.title||k.name.toUpperCase()+' TRICK '+(n+1),spot:f.spot||'Highlight · '+k.name,dur:f.dur||'',by:f.by,date:'HIGHLIGHT',clip:c,poster:/\.mp4$/.test(c)?c.replace(/\.mp4$/,'.jpg'):undefined,hlOnly:true}});
+const hlItems = k => (k.hlClips||[]).map((c,n)=>{const f=(k.hlInfo||[])[n]||{};return {id:'hl-'+k.id+'-'+n,sk:k.id,short:f.short||'TRICK '+(n+1),title:f.title||k.name.toUpperCase()+' TRICK '+(n+1),spot:f.spot||'Highlight · '+k.name,dur:f.dur||'',by:f.by,tags:f.tags,date:'HIGHLIGHT',clip:c,poster:/\.mp4$/.test(c)?c.replace(/\.mp4$/,'.jpg'):undefined,hlOnly:true}});
 const igEmbed = u => u.split('?')[0].replace(/\/$/,'')+'/embed';
 
 const CREW_FOTOS = ['media/crew-foto.jpg','crew-foto.jpg','media/crew-foto.png','media/crew-foto.jpeg'];
@@ -332,7 +332,8 @@ const StoryViewer = ({items,start,onClose,onWatch}) => {
     <div className="anton text-5xl st-big uppercase leading-none" style=${{textShadow:'4px 4px 0 #000'}}>${v.short}</div>
     <div className="body text-sm mt-3 font-bold st-sub">${v.title}</div>
     <div className="body text-xs text-gray-300 mt-1 st-sub">${v.spot}${v.dur?' · '+v.dur:''}</div>
-    ${v.by && html`<div className="body text-xs text-gray-400 mt-1 st-sub">Video: ${v.by}</div>`}
+    ${v.by && html`<div className="body text-xs text-gray-400 mt-1 st-sub">Filmer: ${v.by}</div>`}
+    ${v.tags && html`<div className="body text-xs text-gray-400 mt-1 st-sub">Con: ${v.tags}</div>`}
    </div>
    <div className="relative z-10 p-3 flex flex-wrap gap-2 st-actions pointer-events-none">
     ${!v.hlOnly && html`<button onClick=${()=>onWatch(v.id)} className="pointer-events-auto anton uppercase tracking-wider bg-[#e63946] text-white px-4 py-2 border-4 border-black hard">▶ VER VIDEO</button>`}
