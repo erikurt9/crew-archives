@@ -28,7 +28,8 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 button,a{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .ov{padding:max(8px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left));overscroll-behavior:contain}
 .story-card{width:100%;max-width:380px;height:100%;max-height:675px;touch-action:pan-y}
-@media(max-height:500px){header.sticky{position:static}}
+section[id],#enviar{scroll-margin-top:200px}
+@media(max-height:500px){header.sticky{position:static}section[id],#enviar{scroll-margin-top:12px}}
 /* --- glitch del banner: ráfaga a los ~0.5 s y luego cada 3.6 s; también al tocar el banner --- */
 .glitch{position:relative;width:max-content}
 .logo-g{position:absolute;left:0;top:0;pointer-events:none;opacity:0;font-family:'Archivo','Arial Black',Impact,sans-serif;font-style:italic;font-weight:900;font-stretch:125%;font-variation-settings:'wdth' 125;letter-spacing:-.03em;line-height:.95;text-transform:uppercase;font-size:min(54px,calc((100vw - 92px)/11.6));width:max-content;white-space:nowrap}
@@ -119,6 +120,8 @@ const MES={ENE:0,FEB:1,MAR:2,ABR:3,MAY:4,JUN:5,JUL:6,AGO:7,SEP:8,OCT:9,NOV:10,DI
 const dateOf = v => {const [d,m,y]=v.date.split(' ');return new Date(+y,MES[m],+d).getTime()};
 const LATEST = [...VIDEOS].sort((a,b)=>dateOf(b)-dateOf(a));
 const hlItems = k => (k.hlClips||[]).map((c,n)=>{const f=(k.hlInfo||[])[n]||{};return {id:'hl-'+k.id+'-'+n,sk:k.id,short:f.short||'TRICK '+(n+1),title:f.title||k.name.toUpperCase()+' TRICK '+(n+1),spot:f.spot||'Highlight · '+k.name,dur:f.dur||'',by:f.by,tags:f.tags,date:'HIGHLIGHT',clip:c,poster:/\.mp4$/.test(c)?c.replace(/\.mp4$/,'.jpg'):undefined,hlOnly:true}});
+const STORY_GROUPS = [...SKATERS.filter(k=>k.hlClips).map(hlItems), ...LATEST.map(v=>[v])];
+const HL_COUNT = SKATERS.filter(k=>k.hlClips).length;
 const igEmbed = u => u.split('?')[0].replace(/\/$/,'')+'/embed';
 
 const CREW_FOTOS = ['media/crew-foto.jpg','crew-foto.jpg','media/crew-foto.png','media/crew-foto.jpeg'];
@@ -272,7 +275,7 @@ const Roster = ({filter,setFilter,onProfile}) => {
 const Stories = ({onOpen}) => html`<section className="mb-6">
  <h3 className="anton text-xl uppercase mb-2 flex items-center gap-2"><span className="bg-[#f1c40f] text-black px-2">STORIES</span><span className="w-7 h-7 rounded-md border-2 border-black flex items-center justify-center text-white" style=${{background:IG_BG}}><${IgLogo} size=${16}/></span> LO ÚLTIMO DEL CREW</h3>
  <div className="flex gap-4 overflow-x-auto pb-3">
-  ${SKATERS.filter(k=>k.hl||k.hlClips).map(k=>html`<button key=${'hl'+k.id} onClick=${()=>k.hlClips?onOpen({items:hlItems(k),start:0}):window.open(k.hl,'_blank','noopener')} className="shrink-0 flex flex-col items-center w-[88px] md:w-24">
+  ${SKATERS.filter(k=>k.hl||k.hlClips).map(k=>html`<button key=${'hl'+k.id} onClick=${()=>k.hlClips?onOpen({g:SKATERS.filter(x=>x.hlClips).indexOf(k)}):window.open(k.hl,'_blank','noopener')} className="shrink-0 flex flex-col items-center w-[88px] md:w-24">
    <div className="p-[3px] rounded-full" style=${{background:IG_BG}}>
     ${k.hlCover ? html`<div className="relative w-[68px] h-[68px] md:w-20 md:h-20 rounded-full border-4 border-black overflow-hidden" style=${{background:`url(${k.hlCover}) center/cover,#111`}}></div>` : html`<div className="w-[68px] h-[68px] md:w-20 md:h-20 rounded-full border-4 border-black flex flex-col items-center justify-center gap-0.5 text-center anton text-[10px] leading-none uppercase grain text-white" style=${{background:`linear-gradient(135deg,hsl(${k.hue} 70% 32%),#0a0a0a)`}}><${IgLogo} size=${20}/>HIGHLIGHT</div>`}
    </div>
@@ -281,7 +284,7 @@ const Stories = ({onOpen}) => html`<section className="mb-6">
   </button>`)}
   ${LATEST.map((v,i)=>{const k=skOf(v.sk);const h=igUser(k.ig);return html`<div key=${v.id} className="shrink-0 flex flex-col items-center w-[88px] md:w-24">
    <div className="relative">
-    <button onClick=${()=>onOpen({items:LATEST,start:i})} className="relative block p-[3px] rounded-full" style=${{background:i<3?'conic-gradient(#f1c40f,#e63946,#f1c40f)':'#555'}}>
+    <button onClick=${()=>onOpen({g:HL_COUNT+i})} className="relative block p-[3px] rounded-full" style=${{background:i<3?'conic-gradient(#f1c40f,#e63946,#f1c40f)':'#555'}}>
      <div className="w-[68px] h-[68px] md:w-20 md:h-20 rounded-full border-4 border-black flex items-center justify-center text-center anton text-[11px] md:text-xs leading-tight uppercase p-1 grain" style=${{background:`linear-gradient(135deg,hsl(${k.hue} 70% 32%),#0a0a0a)`}}>${v.short}</div>
      ${i<3 && html`<span className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-[#e63946] text-black text-[9px] font-black body px-1.5 border-2 border-black">NUEVO</span>`}
     </button>
@@ -293,31 +296,34 @@ const Stories = ({onOpen}) => html`<section className="mb-6">
  </div>
 </section>`;
 
-const StoryViewer = ({items,start,onClose,onWatch}) => {
- const [i,setI] = useState(start);
+const StoryViewer = ({start,onClose,onWatch}) => {
+ const [g,setG] = useState(start);
+ const [i,setI] = useState(0);
+ const items = STORY_GROUPS[g];
  const [p,setP] = useState(0);
  const [mute,setMute] = useState(true);
  const vref = el => { if(!el) return; if(!el.dataset.init){el.dataset.init='1';el.defaultMuted=true;el.muted=mute;const pr=el.play();if(pr&&pr.catch)pr.catch(()=>{})} else {el.muted=mute} };
  const v = items[i]; const k = skOf(v.sk);
- const next = () => { if(i<items.length-1){setI(i+1);setP(0)} else onClose() };
- const prev = () => { if(i>0){setI(i-1);setP(0)} else setP(0) };
- useEffect(()=>{if(v.clip) return;const t=setInterval(()=>setP(x=>x+2),100);return ()=>clearInterval(t)},[i]);
+ const next = () => { if(i<items.length-1){setI(i+1);setP(0)} else if(g<STORY_GROUPS.length-1){setG(g+1);setI(0);setP(0)} else onClose() };
+ const prev = () => { if(i>0){setI(i-1);setP(0)} else if(g>0){setG(g-1);setI(STORY_GROUPS[g-1].length-1);setP(0)} else setP(0) };
+ useEffect(()=>{if(v.clip) return;const t=setInterval(()=>setP(x=>x+2),100);return ()=>clearInterval(t)},[g,i]);
  useEffect(()=>{ if(p>=100&&!v.clip) next() },[p]);
  const tx = React.useRef({x:0,y:0});
  const pre = React.useRef([]);
+ const at = d => { let gg=g,ii=i+d; while(gg<STORY_GROUPS.length){const L=STORY_GROUPS[gg].length; if(ii<L) return STORY_GROUPS[gg][ii]; ii-=L; gg++} return null };
  useEffect(()=>{
   pre.current = [];
-  [1,2].forEach(d=>{const n=items[i+d]; if(n&&n.poster){const im=new Image(); im.src=n.poster; pre.current.push(im)}});
-  const nx=items[i+1]; if(nx&&nx.clip){const vv=document.createElement('video'); vv.preload='auto'; vv.muted=true; vv.src=nx.clip; try{vv.load()}catch(e){} pre.current.push(vv)}
- },[i]);
+  [1,2].forEach(d=>{const n=at(d); if(n&&n.poster){const im=new Image(); im.src=n.poster; pre.current.push(im)}});
+  const nx=at(1); if(nx&&nx.clip){const vv=document.createElement('video'); vv.preload='auto'; vv.muted=true; vv.src=nx.clip; try{vv.load()}catch(e){} pre.current.push(vv)}
+ },[g,i]);
  useEffect(()=>{const o=document.body.style.overflow;document.body.style.overflow='hidden';return ()=>{document.body.style.overflow=o}},[]);
  useEffect(()=>{
   const h = e => { if(e.key==='ArrowRight') next(); else if(e.key==='ArrowLeft') prev(); else if(e.key==='Escape') onClose() };
   window.addEventListener('keydown',h);
   return ()=>window.removeEventListener('keydown',h);
- },[i]);
+ },[g,i]);
  return html`<div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center ov" onClick=${onClose}>
-  <button onClick=${e=>{e.stopPropagation();prev()}} disabled=${i===0} aria-label="Anterior" className="hidden md:flex shrink-0 mr-4 w-12 h-12 items-center justify-center bg-[#f1c40f] text-black border-4 border-black hard disabled:opacity-30"><${Ic} d=${'<path d="M15 18l-6-6 6-6"/>'} size=${28}/></button>
+  <button onClick=${e=>{e.stopPropagation();prev()}} disabled=${g===0&&i===0} aria-label="Anterior" className="hidden md:flex shrink-0 mr-4 w-12 h-12 items-center justify-center bg-[#f1c40f] text-black border-4 border-black hard disabled:opacity-30"><${Ic} d=${'<path d="M15 18l-6-6 6-6"/>'} size=${28}/></button>
   <div className="relative story-card border-4 border-white hard-r overflow-hidden grain flex flex-col justify-between" style=${{background:v.clip?'#000':`linear-gradient(160deg,hsl(${k.hue} 75% 35%),#0a0a0a 75%)`}} onClick=${e=>e.stopPropagation()} onTouchStart=${e=>{const t=e.touches[0];tx.current={x:t.clientX,y:t.clientY}}} onTouchEnd=${e=>{const t=e.changedTouches[0];const dx=t.clientX-tx.current.x,dy=t.clientY-tx.current.y;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)){dx<0?next():prev()}}}>
    ${!v.clip && html`<div className="absolute inset-0 opacity-25" style=${{background:`repeating-linear-gradient(-30deg,hsl(${k.hue} 80% 55%) 0 16px,transparent 16px 46px)`}}></div>`}
    ${v.clip && html`<video key=${v.id} ref=${vref} src=${v.clip} poster=${v.poster} className="absolute inset-0 w-full h-full object-cover" autoPlay muted=${mute} playsInline onTimeUpdate=${e=>setP(e.target.currentTime/(e.target.duration||1)*100)} onEnded=${next}></video>`}
@@ -344,6 +350,35 @@ const StoryViewer = ({items,start,onClose,onWatch}) => {
   <button onClick=${e=>{e.stopPropagation();next()}} aria-label="Siguiente" className="hidden md:flex shrink-0 ml-4 w-12 h-12 items-center justify-center bg-[#f1c40f] text-black border-4 border-black hard"><${Ic} d=${'<path d="M9 18l6-6-6-6"/>'} size=${28}/></button>
  </div>`;
 };
+
+/* ---------- SPOTS ---------- */
+const SPOTS = [
+ {n:'01',name:'Skatepark Los Ángeles',sector:'Parque Ricardo Vicuña',lat:-37.4725625,lng:-72.3547344,pid:'ChIJdZCj2Enda5YR34IXwx805zQ'},
+ {n:'02',name:'Skatepark N.º 2',sector:'Parque Estero Quilque · Costanera Quilque Norte',lat:-37.4694021,lng:-72.379533,pid:'ChIJAc3fDADda5YRceyy6Duk-VM'},
+ {n:'03',name:'Skatepark Paillihue',sector:'Paillihue · sector Plaza General Bernales',lat:-37.4885375,lng:-72.3327031,pid:'ChIJw7uRZQDDa5YRWFIxGuWgl6o'}
+];
+const mapsUrl = s => `https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lng}&query_place_id=${s.pid}`;
+const dirUrl = s => `https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}&destination_place_id=${s.pid}`;
+const Spots = ({onSend}) => html`<section id="spots" className="mt-10">
+ <h3 className="anton text-3xl uppercase mb-3 flex flex-wrap items-center gap-x-3 gap-y-1"><span className="bg-[#e63946] px-2 text-black">SPOTS</span> SKATEPARKS DE LOS ÁNGELES</h3>
+ <div className="grid sm:grid-cols-2 gap-5">
+  ${SPOTS.map(s=>html`<article key=${s.n} className="border-4 border-black bg-[#1a1a1a] hard p-4 body">
+   <div className="flex items-center justify-between mb-2"><span className="anton text-4xl text-[#e63946] leading-none">${s.n}</span><span className="bg-[#f1c40f] text-black text-[10px] font-black px-2 py-0.5 border-2 border-black tape">SKATEPARK</span></div>
+   <h4 className="anton uppercase text-2xl leading-tight">${s.name}</h4>
+   <p className="text-sm text-gray-400 mt-1">${s.sector}</p>
+   <div className="flex flex-wrap gap-2 mt-4">
+    <a href=${mapsUrl(s)} target="_blank" rel="noopener noreferrer" className="anton uppercase tracking-wider text-sm bg-[#f1c40f] text-black px-3 py-1.5 border-4 border-black hard">VER EN GOOGLE MAPS ↗</a>
+    <a href=${dirUrl(s)} target="_blank" rel="noopener noreferrer" className="anton uppercase tracking-wider text-sm bg-white text-black px-3 py-1.5 border-4 border-black hard">CÓMO LLEGAR ↗</a>
+   </div>
+  </article>`)}
+  <article className="border-4 border-dashed border-[#555] p-4 body flex flex-col justify-center">
+   <h4 className="anton uppercase text-2xl leading-tight">¿FALTA UN SPOT?</h4>
+   <p className="text-sm text-gray-400 mt-1">Si conoces otro skatepark o un spot de calle de la zona, mándalo.</p>
+   <button onClick=${onSend} className="mt-4 self-start anton uppercase tracking-wider text-sm bg-[#e63946] text-white px-3 py-1.5 border-4 border-black hard">MANDAR SPOT</button>
+  </article>
+ </div>
+ <p className="body text-xs text-gray-500 mt-2">Ubicaciones según Google Maps.</p>
+</section>`;
 
 /* ---------- CARD ---------- */
 const Card = ({v,likes,liked,active,onPick,onLike}) => html`<article className=${'border-4 bg-[#1a1a1a] hard transition-transform hover:-translate-y-1 '+(active?'border-[#e63946]':'border-black')}>
@@ -380,7 +415,7 @@ const Sidebar = () => {
     ${HOF.map((h,i)=>html`<li key=${h} className="flex gap-2 items-start border-b border-[#333] pb-2"><span className="anton text-2xl text-[#e63946] w-6">${i+1}</span><span className="text-sm font-bold">${h}</span></li>`)}
    </ol>
   </div>
-  <div className="border-4 border-[#f1c40f] bg-[#1a1a1a] p-3">
+  <div id="enviar" className="border-4 border-[#f1c40f] bg-[#1a1a1a] p-3">
    <div className="anton text-xl uppercase mb-2 flex items-center gap-2"><${Ic} d=${I.up}/> ENVÍA TU CLIP</div>
    ${sent ? html`<div className="text-center py-4"><div className="marker text-2xl text-[#f1c40f]">¡RECIBIDO!</div><p className="text-sm text-gray-300 mt-1">Si es brutal, lo publicamos.</p><button onClick=${()=>{setSent(false);setF({name:'',link:'',trick:''})}} className="mt-3 anton uppercase underline">Enviar otro</button></div>` :
    html`<div className="space-y-2">
@@ -443,7 +478,7 @@ const App = () => {
  const toggle = id => setLiked(l=>({...l,[id]:!l[id]}));
  const pick = id => {setActiveId(id);window.scrollTo({top:0,behavior:'smooth'})};
  const nav = n => {
-  const target = n.startsWith('CREW')?'crew':n==='VIDEOS'?'grid':null;
+  const target = n.startsWith('CREW')?'crew':n==='VIDEOS'?'grid':n==='SPOTS'?'spots':null;
   if(target) document.getElementById(target)?.scrollIntoView({behavior:'smooth'});
   else window.scrollTo({top:0,behavior:'smooth'});
  };
@@ -460,6 +495,7 @@ const App = () => {
       ${list.map(v=>html`<${Card} key=${v.id} v=${v} likes=${likes(v)} liked=${!!liked[v.id]} active=${v.id===activeId} onPick=${pick} onLike=${()=>toggle(v.id)}/>`)}
      </div>
     </section>
+    <${Spots} onSend=${()=>document.getElementById('enviar')?.scrollIntoView({behavior:'smooth'})}/>
    </div>
    <${Sidebar}/>
   </main>
@@ -467,7 +503,7 @@ const App = () => {
    <div className="flex justify-center mb-2"><${Skull} size=${36}/></div>
    CREW ARCHIVES © 2026 — SKATE AND DESTROY. Prototipo inspirado en la estética de las revistas de skate.
   </footer>
-  ${story!==null && html`<${StoryViewer} items=${story.items} start=${story.start} onClose=${()=>setStory(null)} onWatch=${id=>{setStory(null);pick(id)}}/>`}
+  ${story!==null && html`<${StoryViewer} start=${story.g} onClose=${()=>setStory(null)} onWatch=${id=>{setStory(null);pick(id)}}/>`}
   ${profile && html`<${Profile} id=${profile} onClose=${()=>setProfile(null)} onFilter=${setFilter}/>`}
  </div>`;
 };
