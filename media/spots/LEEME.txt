@@ -1,0 +1,5 @@
+Fotos de los skateparks (sección SPOTS)
+Pon aquí las fotos con estos nombres: spot-1.jpg, spot-2.jpg, spot-3.jpg
+(formato horizontal 16:9, JPG, idealmente 1200x675 y menos de 300 KB).
+El crédito de quien tomó la foto se escribe en index.html, en SPOTS, campo cred:'@usuario'.
+Si una foto no existe, la tarjeta se ve igual, sin foto.

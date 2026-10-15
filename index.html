@@ -102,7 +102,16 @@ const SKATERS = [
   {short:'PLAZA',title:'LÍNEA POR LA PLAZA',spot:'Plaza del centro · de día',dur:'0:07',by:'@dr0pp4'},
   {short:'BOX',title:'SLIDE EN EL BOX',spot:'Skatepark · de noche',dur:'0:08'}
  ],name:'Diego',nick:'EL TIGRE',stance:'Goofy',years:4,spot:'Skatepark Los Ángeles, Ricardo Vicuña',hue:280,
-  favs:['Fs boardslide','Ollie al gap','Bs bigspin'],setup:{deck:'7.875" Maple 7-ply',trucks:'Independent 139',wheels:'53mm 100A',bearings:'Bones Swiss'}}
+  favs:['Fs boardslide','Ollie al gap','Bs bigspin'],setup:{deck:'7.875" Maple 7-ply',trucks:'Independent 139',wheels:'53mm 100A',bearings:'Bones Swiss'}},
+ {id:'chelo',ig:'https://www.instagram.com/chelo_cataclysmic/',hlCover:'media/chelo/chelo-1.jpg',hlClips:['media/chelo/chelo-1.mp4','media/chelo/chelo-2.mp4','media/chelo/chelo-3.mp4','media/chelo/chelo-4.mp4','media/chelo/chelo-5.mp4','media/chelo/chelo-6.mp4','media/chelo/chelo-7.mp4'],hlInfo:[
+  {short:'BAJADA',title:'BAJADA AL ATARDECER',spot:'Calles con pendiente · atardecer',dur:'0:50'},
+  {short:'MONTAJE',title:'SESIÓN NOCTURNA EN EL SKATEPARK',spot:'Skatepark · de noche',dur:'0:37'},
+  {short:'RAILS',title:'MONTAJE DE RAILS',spot:'Skatepark · de noche y de día',dur:'0:42'},
+  {short:'SLIDES',title:'SLIDES EN LOS RAILS',spot:'Skatepark · atardecer y noche',dur:'0:23'},
+  {short:'SESIÓN',title:'SESIÓN NOCTURNA CON LA CREW',spot:'Skatepark · de noche',dur:'0:43'},
+  {short:'ESCALERAS',title:'BAJANDO LAS ESCALERAS',spot:'Skatepark · escaleras con baranda',dur:'0:08',by:'@chelo_cataclysmic'},
+  {short:'LEDGE',title:'LEDGES Y UNA CAÍDA',spot:'Skatepark · de día',dur:'0:20',fit:'contain'}
+ ],name:'Chelo',nick:'',stance:'',years:'',spot:'',hue:160,favs:[],setup:{}}
 ];
 const VIDEOS = [
  {id:1,short:'BACK LIP',ig:'',sk:'raspu',title:'KICKFLIP BACK LIP AL RIEL DE LA MUERTE',spot:'Skatepark Los Ángeles, Ricardo Vicuña',filmer:'Cote Cam',date:'03 OCT 2026',dur:'2:41',likes:482,tag:'PARTE COMPLETA',desc:'Raspu se come la plaza entera: rieles, gaps y un back lip que todavía retumba en el barrio. Filmado en fisheye, sin cortes ni piedad.'},
@@ -119,7 +128,7 @@ const skOf = id => SKATERS.find(s=>s.id===id);
 const MES={ENE:0,FEB:1,MAR:2,ABR:3,MAY:4,JUN:5,JUL:6,AGO:7,SEP:8,OCT:9,NOV:10,DIC:11};
 const dateOf = v => {const [d,m,y]=v.date.split(' ');return new Date(+y,MES[m],+d).getTime()};
 const LATEST = [...VIDEOS].sort((a,b)=>dateOf(b)-dateOf(a));
-const hlItems = k => (k.hlClips||[]).map((c,n)=>{const f=(k.hlInfo||[])[n]||{};return {id:'hl-'+k.id+'-'+n,sk:k.id,short:f.short||'TRICK '+(n+1),title:f.title||k.name.toUpperCase()+' TRICK '+(n+1),spot:f.spot||'Highlight · '+k.name,dur:f.dur||'',by:f.by,tags:f.tags,date:'HIGHLIGHT',clip:c,poster:/\.mp4$/.test(c)?c.replace(/\.mp4$/,'.jpg'):undefined,hlOnly:true}});
+const hlItems = k => (k.hlClips||[]).map((c,n)=>{const f=(k.hlInfo||[])[n]||{};return {id:'hl-'+k.id+'-'+n,sk:k.id,short:f.short||'TRICK '+(n+1),title:f.title||k.name.toUpperCase()+' TRICK '+(n+1),spot:f.spot||'Highlight · '+k.name,dur:f.dur||'',by:f.by,tags:f.tags,fit:f.fit,date:'HIGHLIGHT',clip:c,poster:/\.mp4$/.test(c)?c.replace(/\.mp4$/,'.jpg'):undefined,hlOnly:true}});
 const STORY_GROUPS = [...SKATERS.filter(k=>k.hlClips).map(hlItems), ...LATEST.map(v=>[v])];
 const HL_COUNT = SKATERS.filter(k=>k.hlClips).length;
 const igEmbed = u => u.split('?')[0].replace(/\/$/,'')+'/embed';
@@ -255,18 +264,18 @@ const Roster = ({filter,setFilter,onProfile}) => {
   ${s && html`<div className="border-4 border-[#f1c40f] bg-[#1a1a1a] p-4 body grid md:grid-cols-3 gap-4">
    <div>
     <div className="anton text-4xl uppercase" style=${{color:`hsl(${s.hue} 80% 60%)`}}>${s.name}</div>
-    <div className="marker text-[#f1c40f]">"${s.nick}"</div>
+    ${s.nick && html`<div className="marker text-[#f1c40f]">"${s.nick}"</div>`}
     <button onClick=${()=>onProfile(s.id)} className="mt-3 anton uppercase bg-white text-black px-3 py-1 border-2 border-black hard">VER FICHA</button>
    </div>
    <div className="grid grid-cols-3 gap-2 text-center">
-    ${[['STANCE',s.stance],['AÑOS',s.years],['PARTES',VIDEOS.filter(v=>v.sk===s.id).length]].map(([a,b])=>html`<div key=${a} className="border-2 border-[#444] p-2"><div className="text-[10px] text-gray-400">${a}</div><div className="anton text-xl">${b}</div></div>`)}
+    ${[['STANCE',s.stance||'—'],['AÑOS',s.years||'—'],['PARTES',VIDEOS.filter(v=>v.sk===s.id).length]].map(([a,b])=>html`<div key=${a} className="border-2 border-[#444] p-2"><div className="text-[10px] text-gray-400">${a}</div><div className="anton text-xl">${b}</div></div>`)}
    </div>
-   <div>
+   ${s.favs.length>0 && html`<div>
     <div className="text-xs text-gray-400 mb-1">FOTOS DE TRUCOS</div>
     <div className="grid grid-cols-3 gap-2">
      ${s.favs.map((f,i)=>html`<div key=${f} title=${f} className="aspect-square grain border-2 border-black flex items-end p-1 text-[9px] font-black leading-tight" style=${{background:`linear-gradient(${135+i*50}deg,hsl(${s.hue+i*25} 70% 30%),#000)`}}>${f}</div>`)}
     </div>
-   </div>
+   </div>`}
   </div>`}
  </section>`;
 };
@@ -326,7 +335,7 @@ const StoryViewer = ({start,onClose,onWatch}) => {
   <button onClick=${e=>{e.stopPropagation();prev()}} disabled=${g===0&&i===0} aria-label="Anterior" className="hidden md:flex shrink-0 mr-4 w-12 h-12 items-center justify-center bg-[#f1c40f] text-black border-4 border-black hard disabled:opacity-30"><${Ic} d=${'<path d="M15 18l-6-6 6-6"/>'} size=${28}/></button>
   <div className="relative story-card border-4 border-white hard-r overflow-hidden grain flex flex-col justify-between" style=${{background:v.clip?'#000':`linear-gradient(160deg,hsl(${k.hue} 75% 35%),#0a0a0a 75%)`}} onClick=${e=>e.stopPropagation()} onTouchStart=${e=>{const t=e.touches[0];tx.current={x:t.clientX,y:t.clientY}}} onTouchEnd=${e=>{const t=e.changedTouches[0];const dx=t.clientX-tx.current.x,dy=t.clientY-tx.current.y;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)){dx<0?next():prev()}}}>
    ${!v.clip && html`<div className="absolute inset-0 opacity-25" style=${{background:`repeating-linear-gradient(-30deg,hsl(${k.hue} 80% 55%) 0 16px,transparent 16px 46px)`}}></div>`}
-   ${v.clip && html`<video key=${v.id} ref=${vref} src=${v.clip} poster=${v.poster} className="absolute inset-0 w-full h-full object-cover" autoPlay muted=${mute} playsInline onTimeUpdate=${e=>setP(e.target.currentTime/(e.target.duration||1)*100)} onEnded=${next}></video>`}
+   ${v.clip && html`<video key=${v.id} ref=${vref} src=${v.clip} poster=${v.poster} className=${'absolute inset-0 w-full h-full '+(v.fit==='contain'?'object-contain':'object-cover')} autoPlay muted=${mute} playsInline onTimeUpdate=${e=>setP(e.target.currentTime/(e.target.duration||1)*100)} onEnded=${next}></video>`}
    ${v.clip && html`<div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/40"></div>`}
    <div className="absolute inset-0 flex"><div className="w-1/3" onClick=${prev}></div><div className="w-2/3" onClick=${next}></div></div>
    <div className="relative z-10 p-3 pointer-events-none">
@@ -334,7 +343,7 @@ const StoryViewer = ({start,onClose,onWatch}) => {
     <div className="flex items-center justify-between mt-3 body text-xs font-bold"><span>${k.name} · ${v.date}</span><div className="flex gap-2 pointer-events-auto">${v.clip && html`<button onClick=${()=>setMute(!mute)} className="border-2 border-white px-1.5 text-[10px] font-black">${mute?'SIN SONIDO':'SONIDO ON'}</button>`}<button onClick=${onClose} className="border-2 border-white p-0.5"><${Ic} d=${I.x} size=${16}/></button></div></div>
    </div>
    <div className="relative z-10 px-4 pointer-events-none">
-    <div className="marker text-[#f1c40f] text-xl mb-2">"${k.nick}"</div>
+    ${k.nick && html`<div className="marker text-[#f1c40f] text-xl mb-2">"${k.nick}"</div>`}
     <div className="anton text-5xl st-big uppercase leading-none" style=${{textShadow:'4px 4px 0 #000'}}>${v.short}</div>
     <div className="body text-sm mt-3 font-bold st-sub">${v.title}</div>
     <div className="body text-xs text-gray-300 mt-1 st-sub">${v.spot}${v.dur?' · '+v.dur:''}</div>
@@ -352,17 +361,22 @@ const StoryViewer = ({start,onClose,onWatch}) => {
 };
 
 /* ---------- SPOTS ---------- */
+/* foto: archivo en media/spots/ (ej. spot-1.jpg). cred: quién tomó la foto, ej. '@usuario' (opcional) */
 const SPOTS = [
- {n:'01',name:'Skatepark Los Ángeles',sector:'Parque Ricardo Vicuña',lat:-37.4725625,lng:-72.3547344,pid:'ChIJdZCj2Enda5YR34IXwx805zQ'},
- {n:'02',name:'Skatepark N.º 2',sector:'Parque Estero Quilque · Costanera Quilque Norte',lat:-37.4694021,lng:-72.379533,pid:'ChIJAc3fDADda5YRceyy6Duk-VM'},
- {n:'03',name:'Skatepark Paillihue',sector:'Paillihue · sector Plaza General Bernales',lat:-37.4885375,lng:-72.3327031,pid:'ChIJw7uRZQDDa5YRWFIxGuWgl6o'}
+ {n:'01',name:'Skatepark Los Ángeles',sector:'Parque Ricardo Vicuña',lat:-37.4725625,lng:-72.3547344,pid:'ChIJdZCj2Enda5YR34IXwx805zQ',foto:'media/spots/spot-1.jpg',cred:''},
+ {n:'02',name:'Skatepark N.º 2',sector:'Parque Estero Quilque · Costanera Quilque Norte',lat:-37.4694021,lng:-72.379533,pid:'ChIJAc3fDADda5YRceyy6Duk-VM',foto:'media/spots/spot-2.jpg',cred:''},
+ {n:'03',name:'Skatepark Paillihue',sector:'Paillihue · sector Plaza General Bernales',lat:-37.4885375,lng:-72.3327031,pid:'ChIJw7uRZQDDa5YRWFIxGuWgl6o',foto:'media/spots/spot-3.jpg',cred:''}
 ];
 const mapsUrl = s => `https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lng}&query_place_id=${s.pid}`;
 const dirUrl = s => `https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}&destination_place_id=${s.pid}`;
-const Spots = ({onSend}) => html`<section id="spots" className="mt-10">
- <h3 className="anton text-3xl uppercase mb-3 flex flex-wrap items-center gap-x-3 gap-y-1"><span className="bg-[#e63946] px-2 text-black">SPOTS</span> SKATEPARKS DE LOS ÁNGELES</h3>
- <div className="grid sm:grid-cols-2 gap-5">
-  ${SPOTS.map(s=>html`<article key=${s.n} className="border-4 border-black bg-[#1a1a1a] hard p-4 body">
+const SpotCard = ({s}) => {
+ const [bad,setBad] = useState(false);
+ return html`<article className="border-4 border-black bg-[#1a1a1a] hard body overflow-hidden">
+  ${s.foto && !bad && html`<div className="relative w-full aspect-video bg-black">
+   <img src=${s.foto} alt=${s.name} loading="lazy" onError=${()=>setBad(true)} className="absolute inset-0 w-full h-full object-cover"/>
+   ${s.cred && html`<span className="absolute bottom-1 right-1 bg-black/70 text-white text-[10px] px-1.5 py-0.5">Foto: ${s.cred}</span>`}
+  </div>`}
+  <div className="p-4">
    <div className="flex items-center justify-between mb-2"><span className="anton text-4xl text-[#e63946] leading-none">${s.n}</span><span className="bg-[#f1c40f] text-black text-[10px] font-black px-2 py-0.5 border-2 border-black tape">SKATEPARK</span></div>
    <h4 className="anton uppercase text-2xl leading-tight">${s.name}</h4>
    <p className="text-sm text-gray-400 mt-1">${s.sector}</p>
@@ -370,7 +384,13 @@ const Spots = ({onSend}) => html`<section id="spots" className="mt-10">
     <a href=${mapsUrl(s)} target="_blank" rel="noopener noreferrer" className="anton uppercase tracking-wider text-sm bg-[#f1c40f] text-black px-3 py-1.5 border-4 border-black hard">VER EN GOOGLE MAPS ↗</a>
     <a href=${dirUrl(s)} target="_blank" rel="noopener noreferrer" className="anton uppercase tracking-wider text-sm bg-white text-black px-3 py-1.5 border-4 border-black hard">CÓMO LLEGAR ↗</a>
    </div>
-  </article>`)}
+  </div>
+ </article>`;
+};
+const Spots = ({onSend}) => html`<section id="spots" className="mt-10">
+ <h3 className="anton text-3xl uppercase mb-3 flex flex-wrap items-center gap-x-3 gap-y-1"><span className="bg-[#e63946] px-2 text-black">SPOTS</span> SKATEPARKS DE LOS ÁNGELES</h3>
+ <div className="grid sm:grid-cols-2 gap-5">
+  ${SPOTS.map(s=>html`<${SpotCard} key=${s.n} s=${s}/>`)}
   <article className="border-4 border-dashed border-[#555] p-4 body flex flex-col justify-center">
    <h4 className="anton uppercase text-2xl leading-tight">¿FALTA UN SPOT?</h4>
    <p className="text-sm text-gray-400 mt-1">Si conoces otro skatepark o un spot de calle de la zona, mándalo.</p>
@@ -441,12 +461,12 @@ const Profile = ({id,onClose,onFilter}) => {
   <div className="relative w-full max-w-2xl bg-[#161616] border-4 border-white hard-r body my-auto" onClick=${e=>e.stopPropagation()}>
    <button onClick=${onClose} className="absolute -top-3 -right-3 bg-[#e63946] text-white border-4 border-black p-1"><${Ic} d=${I.x}/></button>
    <div className="p-5 grain" style=${{background:`linear-gradient(120deg,hsl(${s.hue} 70% 25%),#111)`}}>
-    <div className="marker text-[#f1c40f] text-xl">"${s.nick}"</div>
+    ${s.nick && html`<div className="marker text-[#f1c40f] text-xl">"${s.nick}"</div>`}
     <div className="anton text-6xl uppercase leading-none" style=${{textShadow:'4px 4px 0 #000'}}>${s.name}</div>
-    <div className="text-sm mt-1">${s.stance} · ${s.years} años rodando · ${s.spot}</div>
+    <div className="text-sm mt-1">${[s.stance,s.years&&s.years+' años rodando',s.spot].filter(Boolean).join(' · ')}</div>
     ${s.ig && html`<a href=${s.ig} target="_blank" rel="noopener noreferrer" className="inline-block mt-2 text-xs font-black bg-white text-black px-2 py-1 border-2 border-black">SU INSTAGRAM ↗</a>`}
    </div>
-   <div className="p-5 grid md:grid-cols-2 gap-5">
+   ${(s.favs.length>0||Object.keys(s.setup).length>0) && html`<div className="p-5 grid md:grid-cols-2 gap-5">
     <div>
      <div className="anton uppercase text-[#f1c40f] text-lg mb-2">TRUCOS FAVORITOS</div>
      <ul className="space-y-1">${s.favs.map(f=>html`<li key=${f} className="border-l-4 border-[#e63946] pl-2 font-bold text-sm">${f}</li>`)}</ul>
@@ -455,9 +475,10 @@ const Profile = ({id,onClose,onFilter}) => {
      <div className="anton uppercase text-[#f1c40f] text-lg mb-2">SETUP</div>
      <dl className="text-sm space-y-1">${Object.entries(s.setup).map(([k,v])=>html`<div key=${k} className="flex justify-between border-b border-[#333]"><dt className="uppercase text-gray-400">${k}</dt><dd className="font-bold">${v}</dd></div>`)}</dl>
     </div>
-   </div>
+   </div>`}
    <div className="px-5 pb-5">
     <div className="anton uppercase text-[#f1c40f] text-lg mb-2">EDITS (${vids.length})</div>
+    ${vids.length===0 && html`<p className="text-sm text-gray-400 mb-4">Todavía no hay edits de ${s.name}. Mira sus highlights en las stories de arriba.</p>`}
     <ul className="space-y-1 mb-4">${vids.map(v=>html`<li key=${v.id} className="text-sm flex justify-between gap-2"><span>▶ ${v.title}</span><span className="text-gray-400">${v.dur}</span></li>`)}</ul>
     <button onClick=${()=>{onFilter(id);onClose()}} className="anton uppercase tracking-widest bg-[#f1c40f] text-black px-4 py-2 border-4 border-black hard">FILTRAR SOLO A ${s.name}</button>
    </div>
@@ -491,6 +512,7 @@ const App = () => {
     <${Roster} filter=${filter} setFilter=${setFilter} onProfile=${setProfile}/>
     <section id="grid" className="mt-8">
      <h3 className="anton text-3xl uppercase mb-4 flex items-center gap-3"><span className="bg-[#f1c40f] text-black px-2">LATEST</span> EDITS / VIDEO PARTS <span className="text-sm text-gray-400 body">(${list.length})</span></h3>
+     ${list.length===0 && html`<p className="body text-sm text-gray-400">Todavía no hay edits de este skater. Mira sus highlights en las stories de arriba.</p>`}
      <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
       ${list.map(v=>html`<${Card} key=${v.id} v=${v} likes=${likes(v)} liked=${!!liked[v.id]} active=${v.id===activeId} onPick=${pick} onLike=${()=>toggle(v.id)}/>`)}
      </div>
