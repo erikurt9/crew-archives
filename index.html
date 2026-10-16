@@ -114,7 +114,7 @@ const SKATERS = [
  ],name:'Chelo',nick:'',stance:'',years:'',spot:'',hue:160,favs:[],setup:{}}
 ];
 const VIDEOS = [
- {id:1,short:'RAIL',ig:'',sk:'droppa',title:'GRIND LARGO EN EL RAIL',spot:'Skatepark · de noche',filmer:'',date:'OCT 2026',dur:'0:10',likes:0,tag:'CLIP',desc:'Un grind largo en un rail, de noche, con las luces del skatepark.',clip:'media/droppa/droppa-6.mp4',poster:'media/droppa/droppa-6.jpg'},
+ {id:1,short:'RAIL',ig:'',sk:'droppa',title:'GRIND LARGO EN EL RAIL',spot:'Skatepark · de noche',filmer:'',date:'OCT 2026',dur:'0:10',likes:0,tag:'CLIP',desc:'Un grind largo en un rail, de noche, con las luces del skatepark.',clip:'media/droppa/droppa-6.mp4',poster:'media/droppa/droppa-6.jpg',thumb:'media/droppa/droppa-6-card.jpg'},
  {id:2,short:'ESCALERÓN',ig:'',sk:'boris',title:'BORIS VS. EL ESCALERÓN',spot:'Parque Ecuador',filmer:'Pablo VX',date:'28 SEP 2026',dur:'1:58',likes:391,tag:'EDIT',desc:'Doce escalones, un varial flip y cero dudas.'},
  {id:3,short:'HARDFLIP',ig:'',sk:'droppa',title:'HARDFLIP EN LA COSTANERA',spot:'Costanera Sur',filmer:'Cote Cam',date:'21 SEP 2026',dur:'3:12',likes:640,tag:'PARTE COMPLETA',desc:'Doce años de calle en tres minutos de pura agresión.'},
  {id:4,short:'BOWL',ig:'',sk:'diego',title:'DIEGO SE ADUEÑA DEL BOWL',spot:'Skatepark Los Ángeles, Ricardo Vicuña',filmer:'Maca Lens',date:'15 SEP 2026',dur:'1:34',likes:275,tag:'CLIP',desc:'Cuatro años patinando y ya manda en el cuarto de tubo.'},
@@ -171,11 +171,14 @@ const Thumb = ({v,big,playing,progress}) => {
  const s = skOf(v.sk);
  const [fi,setFi] = useState(0);
  const [ok,setOk] = useState(false);
+ const [tb,setTb] = useState(false);
+ const th = !big && v.thumb && !tb ? v.thumb : null;
  const foto = big && fi<CREW_FOTOS.length ? CREW_FOTOS[fi] : null;
  return html`<div className=${'relative w-full overflow-hidden grain '+(big?'aspect-video':'aspect-video')} style=${{background:`linear-gradient(135deg,hsl(${s.hue} 70% 22%),#0a0a0a 70%)`}}>
   <div className="absolute inset-0 opacity-30" style=${{background:`repeating-linear-gradient(-30deg,hsl(${s.hue} 80% 50%) 0 14px,transparent 14px 40px)`}}></div>
+  ${th && html`<img src=${th} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover blur-xl scale-125 opacity-60"/><img src=${th} alt=${v.title} loading="lazy" onError=${()=>setTb(true)} className="absolute inset-0 w-full h-full object-contain"/>`}
   ${foto && html`<img src=${foto} alt="Crew" onLoad=${()=>setOk(true)} onError=${()=>setFi(fi+1)} className="absolute inset-0 w-full h-full object-cover"/>`}
-  ${!(foto&&ok) && html`<div className=${'absolute left-3 bottom-3 right-3 anton uppercase leading-none text-white '+(big?'text-3xl md:text-5xl':'text-lg')} style=${{textShadow:'3px 3px 0 #000'}}>${s.nick}</div>`}
+  ${!(foto&&ok) && !th && html`<div className=${'absolute left-3 bottom-3 right-3 anton uppercase leading-none text-white '+(big?'text-3xl md:text-5xl':'text-lg')} style=${{textShadow:'3px 3px 0 #000'}}>${s.nick}</div>`}
   <div className="absolute top-2 left-2 bg-[#f1c40f] text-black text-[10px] font-black px-2 py-0.5 body tape border-2 border-black">${v.tag}</div>
   ${big && html`<div className="absolute inset-x-0 bottom-0 h-1.5 bg-black/60"><div className="h-full bg-[#e63946]" style=${{width:progress+'%'}}></div></div>`}
   ${big && playing && html`<div className="absolute top-3 right-3 flex items-center gap-1 text-xs body font-bold bg-black/70 px-2 py-1"><span className="w-2 h-2 rounded-full bg-[#e63946] animate-pulse"></span> REPRODUCIENDO</div>`}
