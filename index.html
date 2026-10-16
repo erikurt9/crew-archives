@@ -125,12 +125,9 @@ const VIDEOS = [
 ];
 const HOF = ['Droppa — Hardflip, Costanera','Diego — Bigspin, Muelle','Raspu — Back lip, Ricardo Vicuña','Boris — Escalerón 12'];
 const skOf = id => SKATERS.find(s=>s.id===id);
-const MES={ENE:0,FEB:1,MAR:2,ABR:3,MAY:4,JUN:5,JUL:6,AGO:7,SEP:8,OCT:9,NOV:10,DIC:11};
-const dateOf = v => {const [d,m,y]=v.date.split(' ');return new Date(+y,MES[m],+d).getTime()};
-const LATEST = [...VIDEOS].sort((a,b)=>dateOf(b)-dateOf(a));
 const hlItems = k => (k.hlClips||[]).map((c,n)=>{const f=(k.hlInfo||[])[n]||{};return {id:'hl-'+k.id+'-'+n,sk:k.id,short:f.short||'TRICK '+(n+1),title:f.title||k.name.toUpperCase()+' TRICK '+(n+1),spot:f.spot||'Highlight · '+k.name,dur:f.dur||'',by:f.by,tags:f.tags,fit:f.fit,date:'HIGHLIGHT',clip:c,poster:/\.mp4$/.test(c)?c.replace(/\.mp4$/,'.jpg'):undefined,hlOnly:true}});
-const STORY_GROUPS = [...SKATERS.filter(k=>k.hlClips).map(hlItems), ...LATEST.map(v=>[v])];
-const HL_COUNT = SKATERS.filter(k=>k.hlClips).length;
+/* lista de stories: solo highlights con clips reales, en el mismo orden que los círculos (el de SKATERS) */
+const STORY_GROUPS = SKATERS.filter(k=>k.hlClips&&k.hlClips.length).map(hlItems);
 const igEmbed = u => u.split('?')[0].replace(/\/$/,'')+'/embed';
 
 const CREW_FOTOS = ['media/crew-foto.jpg','crew-foto.jpg','media/crew-foto.png','media/crew-foto.jpeg'];
@@ -282,20 +279,12 @@ const Roster = ({filter,setFilter,onProfile}) => {
 
 /* ---------- STORIES ---------- */
 const Stories = ({onOpen}) => html`<section className="mb-6">
- <h3 className="anton text-xl uppercase mb-2 flex items-center gap-2"><span className="bg-[#f1c40f] text-black px-2">STORIES</span><span className="w-7 h-7 rounded-md border-2 border-black flex items-center justify-center text-white" style=${{background:IG_BG}}><${IgLogo} size=${16}/></span> LO ÚLTIMO DEL CREW</h3>
+ <h3 className="anton text-xl uppercase mb-2 flex items-center gap-2"><span className="bg-[#f1c40f] text-black px-2">STORIES</span><span className="w-7 h-7 rounded-md border-2 border-black flex items-center justify-center text-white" style=${{background:IG_BG}}><${IgLogo} size=${16}/></span> HIGHLIGHTS DEL CREW</h3>
  <div className="flex gap-4 overflow-x-auto pb-3">
-  ${SKATERS.filter(k=>k.hl||k.hlClips).map(k=>html`<button key=${'hl'+k.id} onClick=${()=>k.hlClips?onOpen({g:SKATERS.filter(x=>x.hlClips).indexOf(k)}):window.open(k.hl,'_blank','noopener')} className="shrink-0 flex flex-col items-center w-[88px] md:w-24">
-   <div className="p-[3px] rounded-full" style=${{background:IG_BG}}>
-    ${k.hlCover ? html`<div className="relative w-[68px] h-[68px] md:w-20 md:h-20 rounded-full border-4 border-black overflow-hidden" style=${{background:`url(${k.hlCover}) center/cover,#111`}}></div>` : html`<div className="w-[68px] h-[68px] md:w-20 md:h-20 rounded-full border-4 border-black flex flex-col items-center justify-center gap-0.5 text-center anton text-[10px] leading-none uppercase grain text-white" style=${{background:`linear-gradient(135deg,hsl(${k.hue} 70% 32%),#0a0a0a)`}}><${IgLogo} size=${20}/>HIGHLIGHT</div>`}
-   </div>
-   <div className="anton uppercase text-sm mt-2">${k.name}</div>
-   <span className="body text-[10px] text-gray-400">${igUser(k.ig)}</span>
-  </button>`)}
-  ${LATEST.map((v,i)=>{const k=skOf(v.sk);const h=igUser(k.ig);return html`<div key=${v.id} className="shrink-0 flex flex-col items-center w-[88px] md:w-24">
+  ${STORY_GROUPS.map((grp,gi)=>{const k=skOf(grp[0].sk);const h=igUser(k.ig);return html`<div key=${k.id} className="shrink-0 flex flex-col items-center w-[88px] md:w-24">
    <div className="relative">
-    <button onClick=${()=>onOpen({g:HL_COUNT+i})} className="relative block p-[3px] rounded-full" style=${{background:i<3?'conic-gradient(#f1c40f,#e63946,#f1c40f)':'#555'}}>
-     <div className="w-[68px] h-[68px] md:w-20 md:h-20 rounded-full border-4 border-black flex items-center justify-center text-center anton text-[11px] md:text-xs leading-tight uppercase p-1 grain" style=${{background:`linear-gradient(135deg,hsl(${k.hue} 70% 32%),#0a0a0a)`}}>${v.short}</div>
-     ${i<3 && html`<span className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-[#e63946] text-black text-[9px] font-black body px-1.5 border-2 border-black">NUEVO</span>`}
+    <button onClick=${()=>onOpen({g:gi})} aria-label=${'Highlight de '+k.name} className="relative block p-[3px] rounded-full" style=${{background:IG_BG}}>
+     <div className="w-[68px] h-[68px] md:w-20 md:h-20 rounded-full border-4 border-black overflow-hidden flex items-center justify-center anton text-2xl text-white" style=${{background:k.hlCover?`url(${k.hlCover}) center/cover,#111`:`linear-gradient(135deg,hsl(${k.hue} 70% 32%),#0a0a0a)`}}>${k.hlCover?'':k.name[0]}</div>
     </button>
     ${k.ig && html`<a href=${k.ig} target="_blank" rel="noopener noreferrer" title=${h} className="absolute -top-1 -right-1 w-6 h-6 rounded-full border-2 border-black flex items-center justify-center text-white" style=${{background:IG_BG}}><${IgLogo} size=${14}/></a>`}
    </div>
