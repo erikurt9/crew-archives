@@ -114,7 +114,7 @@ const SKATERS = [
  ],name:'Chelo',nick:'',stance:'',years:'',spot:'',hue:160,favs:[],setup:{}}
 ];
 const VIDEOS = [
- {id:1,short:'BACK LIP',ig:'',sk:'raspu',title:'KICKFLIP BACK LIP AL RIEL DE LA MUERTE',spot:'Skatepark Los Ángeles, Ricardo Vicuña',filmer:'Cote Cam',date:'03 OCT 2026',dur:'2:41',likes:482,tag:'PARTE COMPLETA',desc:'Raspu se come la plaza entera: rieles, gaps y un back lip que todavía retumba en el barrio. Filmado en fisheye, sin cortes ni piedad.'},
+ {id:1,short:'RAIL',ig:'',sk:'droppa',title:'GRIND LARGO EN EL RAIL',spot:'Skatepark · de noche',filmer:'',date:'OCT 2026',dur:'0:10',likes:0,tag:'CLIP',desc:'Un grind largo en un rail, de noche, con las luces del skatepark.',clip:'media/droppa/droppa-6.mp4',poster:'media/droppa/droppa-6.jpg'},
  {id:2,short:'ESCALERÓN',ig:'',sk:'boris',title:'BORIS VS. EL ESCALERÓN',spot:'Parque Ecuador',filmer:'Pablo VX',date:'28 SEP 2026',dur:'1:58',likes:391,tag:'EDIT',desc:'Doce escalones, un varial flip y cero dudas.'},
  {id:3,short:'HARDFLIP',ig:'',sk:'droppa',title:'HARDFLIP EN LA COSTANERA',spot:'Costanera Sur',filmer:'Cote Cam',date:'21 SEP 2026',dur:'3:12',likes:640,tag:'PARTE COMPLETA',desc:'Doce años de calle en tres minutos de pura agresión.'},
  {id:4,short:'BOWL',ig:'',sk:'diego',title:'DIEGO SE ADUEÑA DEL BOWL',spot:'Skatepark Los Ángeles, Ricardo Vicuña',filmer:'Maca Lens',date:'15 SEP 2026',dur:'1:34',likes:275,tag:'CLIP',desc:'Cuatro años patinando y ya manda en el cuarto de tubo.'},
@@ -123,7 +123,12 @@ const VIDEOS = [
  {id:7,short:'TAILSLIDE',ig:'',sk:'boris',title:'BS TAILSLIDE AL CAJÓN',spot:'Skatepark Los Ángeles, Ricardo Vicuña',filmer:'Cote Cam',date:'25 AGO 2026',dur:'1:12',likes:338,tag:'CLIP',desc:'Tailslide largo, salida limpia y a otra cosa.'},
  {id:8,short:'SWITCH 180',ig:'',sk:'droppa',title:'SWITCH BS 180 AL GAP',spot:'Plaza Perú',filmer:'Pablo VX',date:'17 AGO 2026',dur:'0:56',likes:412,tag:'CLIP',desc:'Switch, de espaldas y sin mirar atrás.'}
 ];
-const HOF = ['Droppa — Hardflip, Costanera','Diego — Bigspin, Muelle','Raspu — Back lip, Ricardo Vicuña','Boris — Escalerón 12'];
+/* Hall of Fame = clips reales (skater + número de clip de su highlight). Cámbialos aquí. */
+const HOF = [{sk:'droppa',n:6},{sk:'droppa',n:2},{sk:'boris',n:2},{sk:'chelo',n:6},{sk:'diego',n:1}];
+/* Portada del mes: foto en media/ + a quién y qué truco */
+const COVER = {img:'media/cover-del-mes.jpg',name:'CHELO',title:'ESCALERAS'};
+/* Formulario de clips: pon UNO (whatsapp con código de país y sin +, ej. '56912345678'; o email; o instagram sin @) */
+const CONTACT = {whatsapp:'',email:'',instagram:''};
 const skOf = id => SKATERS.find(s=>s.id===id);
 const hlItems = k => (k.hlClips||[]).map((c,n)=>{const f=(k.hlInfo||[])[n]||{};return {id:'hl-'+k.id+'-'+n,sk:k.id,short:f.short||'TRICK '+(n+1),title:f.title||k.name.toUpperCase()+' TRICK '+(n+1),spot:f.spot||'Highlight · '+k.name,dur:f.dur||'',by:f.by,tags:f.tags,fit:f.fit,date:'HIGHLIGHT',clip:c,poster:/\.mp4$/.test(c)?c.replace(/\.mp4$/,'.jpg'):undefined,hlOnly:true}});
 /* lista de stories: solo highlights con clips reales, en el mismo orden que los círculos (el de SKATERS) */
@@ -216,13 +221,13 @@ const Hero = ({v,likes,liked,onLike,onProfile}) => {
  const [progress,setProgress] = useState(0);
  useEffect(()=>{setPlaying(false);setProgress(0)},[v.id]);
  useEffect(()=>{
-  if(!playing||v.ig) return;
+  if(!playing||v.ig||v.clip) return;
   const t = setInterval(()=>setProgress(p=>p>=100?(setPlaying(false),0):p+0.8),100);
   return ()=>clearInterval(t);
  },[playing]);
  const s = skOf(v.sk);
  return html`<section className="border-4 border-white bg-[#1a1a1a] hard-r">
-  ${v.ig && playing ? html`<div className="bg-black border-b-4 border-white flex flex-col items-center py-3"><iframe src=${igEmbed(v.ig)} title=${v.title} className="w-full max-w-[400px] h-[560px] border-0 bg-white" allowFullScreen></iframe><button onClick=${()=>setPlaying(false)} className="mt-3 anton uppercase tracking-widest bg-[#f1c40f] text-black px-4 py-1 border-4 border-black hard">← VOLVER A LA PORTADA</button></div>` : html`<div className="relative cursor-pointer" onClick=${()=>setPlaying(!playing)}>
+  ${v.clip && playing ? html`<div className="bg-black border-b-4 border-white flex justify-center"><video src=${v.clip} poster=${v.poster} controls playsInline preload="auto" onEnded=${()=>setPlaying(false)} ref=${el=>{if(el&&!el.dataset.i){el.dataset.i='1';const pr=el.play();if(pr&&pr.catch)pr.catch(()=>{})}}} className="block max-h-[75vh] w-auto max-w-full"></video></div>` : v.ig && playing ? html`<div className="bg-black border-b-4 border-white flex flex-col items-center py-3"><iframe src=${igEmbed(v.ig)} title=${v.title} className="w-full max-w-[400px] h-[560px] border-0 bg-white" allowFullScreen></iframe><button onClick=${()=>setPlaying(false)} className="mt-3 anton uppercase tracking-widest bg-[#f1c40f] text-black px-4 py-1 border-4 border-black hard">← VOLVER A LA PORTADA</button></div>` : html`<div className="relative cursor-pointer" onClick=${()=>setPlaying(!playing)}>
    <${Thumb} v=${v} big playing=${playing} progress=${progress}/>
    <div className="absolute inset-0 flex items-center justify-center">
     <div className=${'w-20 h-20 md:w-24 md:h-24 rounded-full bg-[#e63946] border-4 border-black hard flex items-center justify-center text-white hover:scale-110 transition-transform '+(playing?'opacity-50':'')}>
@@ -239,7 +244,7 @@ const Hero = ({v,likes,liked,onLike,onProfile}) => {
    <h2 className="anton text-3xl md:text-5xl uppercase leading-none mb-3">${v.title}</h2>
    <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm mb-3">
     <button onClick=${()=>onProfile(s.id)} className="underline decoration-[#f1c40f] decoration-2 hover:text-[#f1c40f]"><b className="text-[#f1c40f]">SKATER:</b> ${s.name}</button>
-    <span><b className="text-[#f1c40f]">FILMER:</b> ${v.filmer}</span>
+    ${v.filmer && html`<span><b className="text-[#f1c40f]">FILMER:</b> ${v.filmer}</span>`}
    </div>
    <p className="text-gray-300 mb-4 max-w-3xl">${v.desc}</p>
    <button onClick=${onLike} className=${'anton uppercase tracking-widest text-lg px-5 py-2 border-4 border-black hard flex items-center gap-2 active:translate-x-1 active:translate-y-1 active:shadow-none transition '+(liked?'bg-[#e63946] text-white':'bg-[#f1c40f] text-black')}>
@@ -294,9 +299,9 @@ const Stories = ({onOpen}) => html`<section className="mb-6">
  </div>
 </section>`;
 
-const StoryViewer = ({start,onClose,onWatch}) => {
+const StoryViewer = ({start,startI,onClose,onWatch}) => {
  const [g,setG] = useState(start);
- const [i,setI] = useState(0);
+ const [i,setI] = useState(startI||0);
  const items = STORY_GROUPS[g];
  const [p,setP] = useState(0);
  const [mute,setMute] = useState(true);
@@ -404,34 +409,44 @@ const Card = ({v,likes,liked,active,onPick,onLike}) => html`<article className=$
 </article>`;
 
 /* ---------- SIDEBAR ---------- */
-const Sidebar = () => {
- const [sent,setSent] = useState(false);
+const Sidebar = ({onOpen}) => {
+ const [sent,setSent] = useState('');
  const [f,setF] = useState({name:'',link:'',trick:''});
  const set = k => e => setF({...f,[k]:e.target.value});
+ const send = () => {
+  const text = `🛹 Clip para CREW ARCHIVES\nNombre/crew: ${f.name}\nLink: ${f.link}\nTruco y spot: ${f.trick||'-'}`;
+  const enc = encodeURIComponent(text);
+  let url = null;
+  if(CONTACT.whatsapp) url = `https://wa.me/${CONTACT.whatsapp}?text=${enc}`;
+  else if(CONTACT.email) url = `mailto:${CONTACT.email}?subject=${encodeURIComponent('Clip para CREW ARCHIVES')}&body=${enc}`;
+  else if(CONTACT.instagram) url = `https://ig.me/m/${CONTACT.instagram}`;
+  if(!CONTACT.whatsapp&&!CONTACT.email){ try{navigator.clipboard.writeText(text)}catch(e){} }
+  if(url) window.open(url,'_blank','noopener');
+  setSent(url?'ok':'copiado');
+ };
  const inp = 'w-full bg-black border-2 border-[#555] px-2 py-1.5 text-base md:text-sm text-white focus:outline-none focus:border-[#f1c40f]';
  return html`<aside className="space-y-6 body min-w-0">
   <div className="border-4 border-black bg-[#e63946] hard p-3 text-black">
    <div className="anton text-xl uppercase">COVER OF THE MONTH</div>
-   <div className="aspect-[3/4] mt-2 border-4 border-black grain flex flex-col justify-between p-3 relative overflow-hidden" style=${{background:'linear-gradient(160deg,#f1c40f,#e63946 60%,#111)'}}>
-    <div className="anton text-2xl text-black leading-none">CREW ARCHIVES</div>
-    <div className="absolute inset-0 flex items-center justify-center opacity-90"><${Skull} size=${120}/></div>
-    <div className="anton text-white text-3xl uppercase leading-none relative" style=${{textShadow:'3px 3px 0 #000'}}>RASPU<br/>BACK LIP</div>
+   <div className="aspect-[3/4] mt-2 border-4 border-black relative overflow-hidden" style=${{background:`url(${COVER.img}) center/cover,#111`}}>
+    <div className="absolute inset-x-0 top-0 p-3 bg-gradient-to-b from-black/70 to-transparent"><div className="anton text-2xl text-white leading-none" style=${{textShadow:'2px 2px 0 #000'}}>CREW ARCHIVES</div></div>
+    <div className="absolute inset-x-0 bottom-0 p-3 pt-10 bg-gradient-to-t from-black/85 to-transparent"><div className="anton text-white text-3xl uppercase leading-none" style=${{textShadow:'3px 3px 0 #000'}}>${COVER.name}<br/>${COVER.title}</div></div>
    </div>
   </div>
   <div className="border-4 border-white bg-[#1a1a1a] p-3">
    <div className="anton text-xl uppercase text-[#f1c40f] mb-2">★ HALL OF FAME</div>
    <ol className="space-y-2">
-    ${HOF.map((h,i)=>html`<li key=${h} className="flex gap-2 items-start border-b border-[#333] pb-2"><span className="anton text-2xl text-[#e63946] w-6">${i+1}</span><span className="text-sm font-bold">${h}</span></li>`)}
+    ${HOF.map((h,i)=>{const gi=STORY_GROUPS.findIndex(gr=>gr[0].sk===h.sk);const it=STORY_GROUPS[gi]&&STORY_GROUPS[gi][h.n-1];if(!it)return null;return html`<li key=${i} className="border-b border-[#333] pb-2"><button onClick=${()=>onOpen({g:gi,i:h.n-1})} className="flex gap-2 items-start w-full text-left"><span className="anton text-2xl text-[#e63946] w-6">${i+1}</span><span className="text-sm font-bold">${skOf(h.sk).name} — ${it.title} <span className="text-[#f1c40f]">▶</span></span></button></li>`})}
    </ol>
   </div>
   <div id="enviar" className="border-4 border-[#f1c40f] bg-[#1a1a1a] p-3">
    <div className="anton text-xl uppercase mb-2 flex items-center gap-2"><${Ic} d=${I.up}/> ENVÍA TU CLIP</div>
-   ${sent ? html`<div className="text-center py-4"><div className="marker text-2xl text-[#f1c40f]">¡RECIBIDO!</div><p className="text-sm text-gray-300 mt-1">Si es brutal, lo publicamos.</p><button onClick=${()=>{setSent(false);setF({name:'',link:'',trick:''})}} className="mt-3 anton uppercase underline">Enviar otro</button></div>` :
+   ${sent ? html`<div className="text-center py-4"><div className="marker text-2xl text-[#f1c40f]">${sent==='ok'?'¡CASI LISTO!':'MENSAJE COPIADO'}</div><p className="text-sm text-gray-300 mt-1">${sent==='ok'?'Se abrió tu mensaje con el clip: solo falta darle enviar.':'Pégalo en un mensaje y mándalo al crew.'}</p><button onClick=${()=>{setSent('');setF({name:'',link:'',trick:''})}} className="mt-3 anton uppercase underline">Enviar otro</button></div>` :
    html`<div className="space-y-2">
     <input className=${inp} placeholder="Tu nombre / crew" value=${f.name} onChange=${set('name')}/>
     <input className=${inp} placeholder="Link del clip (YouTube, IG...)" value=${f.link} onChange=${set('link')}/>
     <textarea className=${inp} rows="2" placeholder="Truco y spot" value=${f.trick} onChange=${set('trick')}></textarea>
-    <button disabled=${!f.name||!f.link} onClick=${()=>setSent(true)} className="w-full anton uppercase tracking-widest bg-[#e63946] text-white py-2 border-4 border-black hard disabled:opacity-40">MANDAR AL ARCHIVO</button>
+    <button disabled=${!f.name||!f.link} onClick=${send} className="w-full anton uppercase tracking-widest bg-[#e63946] text-white py-2 border-4 border-black hard disabled:opacity-40">MANDAR AL ARCHIVO</button>
    </div>`}
   </div>
   <div className="border-4 border-black bg-white text-black p-3 text-center hard tape">
@@ -508,13 +523,13 @@ const App = () => {
     </section>
     <${Spots} onSend=${()=>document.getElementById('enviar')?.scrollIntoView({behavior:'smooth'})}/>
    </div>
-   <${Sidebar}/>
+   <${Sidebar} onOpen=${setStory}/>
   </main>
   <footer className="border-t-4 border-[#e63946] bg-black py-6 text-center body text-xs text-gray-400">
    <div className="flex justify-center mb-2"><${Skull} size=${36}/></div>
    CREW ARCHIVES © 2026 — SKATE AND DESTROY. Prototipo inspirado en la estética de las revistas de skate.
   </footer>
-  ${story!==null && html`<${StoryViewer} start=${story.g} onClose=${()=>setStory(null)} onWatch=${id=>{setStory(null);pick(id)}}/>`}
+  ${story!==null && html`<${StoryViewer} start=${story.g} startI=${story.i} onClose=${()=>setStory(null)} onWatch=${id=>{setStory(null);pick(id)}}/>`}
   ${profile && html`<${Profile} id=${profile} onClose=${()=>setProfile(null)} onFilter=${setFilter}/>`}
  </div>`;
 };
