@@ -113,16 +113,8 @@ const SKATERS = [
   {short:'LEDGE',title:'LEDGES Y UNA CAÍDA',spot:'Skatepark · de día',dur:'0:20',fit:'contain'}
  ],name:'Chelo',nick:'',stance:'',years:'',spot:'',hue:160,favs:[],setup:{}}
 ];
-const VIDEOS = [
- {id:1,short:'RAIL',ig:'',sk:'droppa',title:'GRIND LARGO EN EL RAIL',spot:'Skatepark · de noche',filmer:'',date:'OCT 2026',dur:'0:10',likes:0,tag:'CLIP',desc:'Un grind largo en un rail, de noche, con las luces del skatepark.',clip:'media/droppa/droppa-6.mp4',poster:'media/droppa/droppa-6.jpg',thumb:'media/droppa/droppa-6-card.jpg'},
- {id:2,short:'ESCALERÓN',ig:'',sk:'boris',title:'BORIS VS. EL ESCALERÓN',spot:'Parque Ecuador',filmer:'Pablo VX',date:'28 SEP 2026',dur:'1:58',likes:391,tag:'EDIT',desc:'Doce escalones, un varial flip y cero dudas.'},
- {id:3,short:'HARDFLIP',ig:'',sk:'droppa',title:'HARDFLIP EN LA COSTANERA',spot:'Costanera Sur',filmer:'Cote Cam',date:'21 SEP 2026',dur:'3:12',likes:640,tag:'PARTE COMPLETA',desc:'Doce años de calle en tres minutos de pura agresión.'},
- {id:4,short:'BOWL',ig:'',sk:'diego',title:'DIEGO SE ADUEÑA DEL BOWL',spot:'Skatepark Los Ángeles, Ricardo Vicuña',filmer:'Maca Lens',date:'15 SEP 2026',dur:'1:34',likes:275,tag:'CLIP',desc:'Cuatro años patinando y ya manda en el cuarto de tubo.'},
- {id:5,short:'BIGSPIN',ig:'',sk:'diego',title:'BS BIGSPIN BAJO LA LLUVIA',spot:'Muelle Lenga',filmer:'Pablo VX',date:'09 SEP 2026',dur:'2:05',likes:518,tag:'EDIT',desc:'Mojado, resbaloso y brutal. Diego no entiende de clima.'},
- {id:6,short:'MANUAL PAD',ig:'',sk:'raspu',title:'NOLLIE FS 180 AL MANUAL PAD',spot:'Barrio Norte',filmer:'Maca Lens',date:'02 SEP 2026',dur:'0:48',likes:203,tag:'CLIP',desc:'Un solo intento. Un solo sonido. Un solo grito.'},
- {id:7,short:'TAILSLIDE',ig:'',sk:'boris',title:'BS TAILSLIDE AL CAJÓN',spot:'Skatepark Los Ángeles, Ricardo Vicuña',filmer:'Cote Cam',date:'25 AGO 2026',dur:'1:12',likes:338,tag:'CLIP',desc:'Tailslide largo, salida limpia y a otra cosa.'},
- {id:8,short:'SWITCH 180',ig:'',sk:'droppa',title:'SWITCH BS 180 AL GAP',spot:'Plaza Perú',filmer:'Pablo VX',date:'17 AGO 2026',dur:'0:56',likes:412,tag:'CLIP',desc:'Switch, de espaldas y sin mirar atrás.'}
-];
+/* video del mes (el reproductor principal arranca con este) */
+const FEATURED = {id:1,short:'RAIL',ig:'',sk:'droppa',title:'GRIND LARGO EN EL RAIL',spot:'Skatepark · de noche',filmer:'',date:'OCT 2026',dur:'0:10',likes:0,tag:'CLIP',desc:'Un grind largo en un rail, de noche, con las luces del skatepark.',clip:'media/droppa/droppa-6.mp4',poster:'media/droppa/droppa-6.jpg',thumb:'media/droppa/droppa-6-card.jpg'};
 /* Hall of Fame = clips reales (skater + número de clip de su highlight). Cámbialos aquí. */
 const HOF = [{sk:'droppa',n:6},{sk:'droppa',n:2},{sk:'boris',n:2},{sk:'chelo',n:6},{sk:'diego',n:1}];
 /* Portada del mes: foto en media/ + a quién y qué truco */
@@ -133,6 +125,10 @@ const skOf = id => SKATERS.find(s=>s.id===id);
 const hlItems = k => (k.hlClips||[]).map((c,n)=>{const f=(k.hlInfo||[])[n]||{};return {id:'hl-'+k.id+'-'+n,sk:k.id,short:f.short||'TRICK '+(n+1),title:f.title||k.name.toUpperCase()+' TRICK '+(n+1),spot:f.spot||'Highlight · '+k.name,dur:f.dur||'',by:f.by,tags:f.tags,fit:f.fit,date:'HIGHLIGHT',clip:c,poster:/\.mp4$/.test(c)?c.replace(/\.mp4$/,'.jpg'):undefined,hlOnly:true}});
 /* lista de stories: solo highlights con clips reales, en el mismo orden que los círculos (el de SKATERS) */
 const STORY_GROUPS = SKATERS.filter(k=>k.hlClips&&k.hlClips.length).map(hlItems);
+const secs = d => { const [m,x] = (d||'0:0').split(':'); return (+m)*60+(+x) };
+/* una tarjeta por cada clip de los highlights (intercalando skaters); el del mes va primero */
+const clipVideos = () => { const out=[]; const max=Math.max(...STORY_GROUPS.map(g=>g.length)); for(let n=0;n<max;n++) STORY_GROUPS.forEach(g=>{const it=g[n]; if(it && it.clip!==FEATURED.clip) out.push({id:it.id,short:it.short,ig:'',sk:it.sk,title:it.title,spot:it.spot,filmer:it.by||'',tags:it.tags,date:'',dur:it.dur,likes:0,tag:secs(it.dur)>=30?'EDIT':'CLIP',desc:'',clip:it.clip,poster:it.poster,thumb:it.poster,fit:it.fit})}); return out };
+const VIDEOS = [FEATURED, ...clipVideos()];
 const igEmbed = u => u.split('?')[0].replace(/\/$/,'')+'/embed';
 
 const CREW_FOTOS = ['media/crew-foto.jpg','crew-foto.jpg','media/crew-foto.png','media/crew-foto.jpeg'];
@@ -176,7 +172,7 @@ const Thumb = ({v,big,playing,progress}) => {
  const foto = big && fi<CREW_FOTOS.length ? CREW_FOTOS[fi] : null;
  return html`<div className=${'relative w-full overflow-hidden grain '+(big?'aspect-video':'aspect-video')} style=${{background:`linear-gradient(135deg,hsl(${s.hue} 70% 22%),#0a0a0a 70%)`}}>
   <div className="absolute inset-0 opacity-30" style=${{background:`repeating-linear-gradient(-30deg,hsl(${s.hue} 80% 50%) 0 14px,transparent 14px 40px)`}}></div>
-  ${th && html`<img src=${th} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover blur-xl scale-125 opacity-60"/><img src=${th} alt=${v.title} loading="lazy" onError=${()=>setTb(true)} className="absolute inset-0 w-full h-full object-contain"/>`}
+  ${th && html`<img key="bg" src=${th} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover blur-xl scale-125 opacity-60"/><img key="fg" src=${th} alt=${v.title} loading="lazy" onError=${()=>setTb(true)} className="absolute inset-0 w-full h-full object-contain"/>`}
   ${foto && html`<img src=${foto} alt="Crew" onLoad=${()=>setOk(true)} onError=${()=>setFi(fi+1)} className="absolute inset-0 w-full h-full object-cover"/>`}
   ${!(foto&&ok) && !th && html`<div className=${'absolute left-3 bottom-3 right-3 anton uppercase leading-none text-white '+(big?'text-3xl md:text-5xl':'text-lg')} style=${{textShadow:'3px 3px 0 #000'}}>${s.nick}</div>`}
   <div className="absolute top-2 left-2 bg-[#f1c40f] text-black text-[10px] font-black px-2 py-0.5 body tape border-2 border-black">${v.tag}</div>
@@ -219,10 +215,11 @@ const Header = ({onNav}) => {
 };
 
 /* ---------- HERO ---------- */
-const Hero = ({v,likes,liked,onLike,onProfile}) => {
- const [playing,setPlaying] = useState(false);
+const Hero = ({v,likes,liked,onLike,onProfile,autoplay}) => {
+ const [playing,setPlaying] = useState(!!(autoplay&&v.clip));
  const [progress,setProgress] = useState(0);
- useEffect(()=>{setPlaying(false);setProgress(0)},[v.id]);
+ const [mfb,setMfb] = useState(false);
+ const vr = React.useRef(null);
  useEffect(()=>{
   if(!playing||v.ig||v.clip) return;
   const t = setInterval(()=>setProgress(p=>p>=100?(setPlaying(false),0):p+0.8),100);
@@ -230,7 +227,7 @@ const Hero = ({v,likes,liked,onLike,onProfile}) => {
  },[playing]);
  const s = skOf(v.sk);
  return html`<section className="border-4 border-white bg-[#1a1a1a] hard-r">
-  ${v.clip && playing ? html`<div className="bg-black border-b-4 border-white flex justify-center"><video src=${v.clip} poster=${v.poster} controls playsInline preload="auto" onEnded=${()=>setPlaying(false)} ref=${el=>{if(el&&!el.dataset.i){el.dataset.i='1';const pr=el.play();if(pr&&pr.catch)pr.catch(()=>{})}}} className="block max-h-[75vh] w-auto max-w-full"></video></div>` : v.ig && playing ? html`<div className="bg-black border-b-4 border-white flex flex-col items-center py-3"><iframe src=${igEmbed(v.ig)} title=${v.title} className="w-full max-w-[400px] h-[560px] border-0 bg-white" allowFullScreen></iframe><button onClick=${()=>setPlaying(false)} className="mt-3 anton uppercase tracking-widest bg-[#f1c40f] text-black px-4 py-1 border-4 border-black hard">← VOLVER A LA PORTADA</button></div>` : html`<div className="relative cursor-pointer" onClick=${()=>setPlaying(!playing)}>
+  ${v.clip && playing ? html`<div className="relative bg-black border-b-4 border-white flex justify-center"><video src=${v.clip} poster=${v.poster} controls playsInline preload="auto" onEnded=${()=>setPlaying(false)} ref=${el=>{vr.current=el;if(el&&!el.dataset.i){el.dataset.i='1';const pr=el.play();if(pr&&pr.catch)pr.catch(()=>{el.muted=true;setMfb(true);const p2=el.play();if(p2&&p2.catch)p2.catch(()=>{})})}}} className="block max-h-[75vh] w-auto max-w-full"></video>${mfb && html`<button onClick=${()=>{if(vr.current)vr.current.muted=false;setMfb(false)}} className="absolute top-2 left-2 anton uppercase text-sm bg-[#f1c40f] text-black px-3 py-1 border-4 border-black hard">🔇 ACTIVAR SONIDO</button>`}</div>` : v.ig && playing ? html`<div className="bg-black border-b-4 border-white flex flex-col items-center py-3"><iframe src=${igEmbed(v.ig)} title=${v.title} className="w-full max-w-[400px] h-[560px] border-0 bg-white" allowFullScreen></iframe><button onClick=${()=>setPlaying(false)} className="mt-3 anton uppercase tracking-widest bg-[#f1c40f] text-black px-4 py-1 border-4 border-black hard">← VOLVER A LA PORTADA</button></div>` : html`<div className="relative cursor-pointer" onClick=${()=>setPlaying(!playing)}>
    <${Thumb} v=${v} big playing=${playing} progress=${progress}/>
    <div className="absolute inset-0 flex items-center justify-center">
     <div className=${'w-20 h-20 md:w-24 md:h-24 rounded-full bg-[#e63946] border-4 border-black hard flex items-center justify-center text-white hover:scale-110 transition-transform '+(playing?'opacity-50':'')}>
@@ -241,15 +238,16 @@ const Hero = ({v,likes,liked,onLike,onProfile}) => {
   <div className="p-4 md:p-6 body">
    <div className="flex flex-wrap items-center gap-2 mb-2">
     <span className="bg-[#e63946] text-black text-xs font-black px-2 py-1 border-2 border-black">VIDEO DEL MES</span>
-    <span className="text-xs text-gray-400">${v.date} · ${v.dur} · ${v.spot}</span>
+    <span className="text-xs text-gray-400">${[v.date,v.dur,v.spot].filter(Boolean).join(' · ')}</span>
     ${v.ig && html`<a href=${v.ig} target="_blank" rel="noopener noreferrer" className="text-xs font-black bg-white text-black px-2 py-1 border-2 border-black">VER EN INSTAGRAM ↗</a>`}
    </div>
    <h2 className="anton text-3xl md:text-5xl uppercase leading-none mb-3">${v.title}</h2>
    <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm mb-3">
     <button onClick=${()=>onProfile(s.id)} className="underline decoration-[#f1c40f] decoration-2 hover:text-[#f1c40f]"><b className="text-[#f1c40f]">SKATER:</b> ${s.name}</button>
     ${v.filmer && html`<span><b className="text-[#f1c40f]">FILMER:</b> ${v.filmer}</span>`}
+    ${v.tags && html`<span><b className="text-[#f1c40f]">CON:</b> ${v.tags}</span>`}
    </div>
-   <p className="text-gray-300 mb-4 max-w-3xl">${v.desc}</p>
+   ${v.desc && html`<p className="text-gray-300 mb-4 max-w-3xl">${v.desc}</p>`}
    <button onClick=${onLike} className=${'anton uppercase tracking-widest text-lg px-5 py-2 border-4 border-black hard flex items-center gap-2 active:translate-x-1 active:translate-y-1 active:shadow-none transition '+(liked?'bg-[#e63946] text-white':'bg-[#f1c40f] text-black')}>
     <${Ic} d=${I.flame} fill=${liked?'currentColor':'none'}/> STOKE · ${likes}
    </button>
@@ -405,7 +403,7 @@ const Card = ({v,likes,liked,active,onPick,onLike}) => html`<article className=$
  </div>
  <div className="p-3 body">
   <h4 onClick=${()=>onPick(v.id)} className="anton uppercase text-lg leading-tight cursor-pointer hover:text-[#f1c40f]">${v.title}</h4>
-  <div className="text-xs text-gray-400 mt-1">${skOf(v.sk).name} · ${v.spot} · ${v.date}</div>
+  <div className="text-xs text-gray-400 mt-1">${[skOf(v.sk).name,v.spot,v.date].filter(Boolean).join(' · ')}</div>
   ${v.ig && html`<a href=${v.ig} target="_blank" rel="noopener noreferrer" className="inline-block mt-2 text-xs font-bold text-[#f1c40f] underline">VER EN INSTAGRAM ↗</a>`}
   <button onClick=${onLike} className=${'mt-3 anton uppercase text-sm tracking-wider px-3 py-1 border-2 border-black flex items-center gap-1 '+(liked?'bg-[#e63946] text-white':'bg-[#f1c40f] text-black')}><${Ic} d=${I.flame} size=${16} fill=${liked?'currentColor':'none'}/> HYPE ${likes}</button>
  </div>
@@ -500,11 +498,14 @@ const App = () => {
  const [liked,setLiked] = useState({});
  const [profile,setProfile] = useState(null);
  const [story,setStory] = useState(null);
+ const [auto,setAuto] = useState(0);
+ const [shown,setShown] = useState(12);
  const list = useMemo(()=>filter==='all'?VIDEOS:VIDEOS.filter(v=>v.sk===filter),[filter]);
+ const pickFilter = f => {setFilter(f);setShown(12)};
  const active = VIDEOS.find(v=>v.id===activeId);
  const likes = v => v.likes + (liked[v.id]?1:0);
  const toggle = id => setLiked(l=>({...l,[id]:!l[id]}));
- const pick = id => {setActiveId(id);window.scrollTo({top:0,behavior:'smooth'})};
+ const pick = id => {setActiveId(id);setAuto(a=>a+1);window.scrollTo({top:0,behavior:'smooth'})};
  const nav = n => {
   const target = n.startsWith('CREW')?'crew':n==='VIDEOS'?'grid':n==='SPOTS'?'spots':null;
   if(target) document.getElementById(target)?.scrollIntoView({behavior:'smooth'});
@@ -515,14 +516,15 @@ const App = () => {
   <main className="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_320px] gap-8">
    <div className="min-w-0">
     <${Stories} onOpen=${setStory}/>
-    <${Hero} v=${active} likes=${likes(active)} liked=${!!liked[active.id]} onLike=${()=>toggle(active.id)} onProfile=${setProfile}/>
-    <${Roster} filter=${filter} setFilter=${setFilter} onProfile=${setProfile}/>
+    <${Hero} key=${activeId+'-'+auto} autoplay=${auto>0} v=${active} likes=${likes(active)} liked=${!!liked[active.id]} onLike=${()=>toggle(active.id)} onProfile=${setProfile}/>
+    <${Roster} filter=${filter} setFilter=${pickFilter} onProfile=${setProfile}/>
     <section id="grid" className="mt-8">
      <h3 className="anton text-3xl uppercase mb-4 flex items-center gap-3"><span className="bg-[#f1c40f] text-black px-2">LATEST</span> EDITS / VIDEO PARTS <span className="text-sm text-gray-400 body">(${list.length})</span></h3>
      ${list.length===0 && html`<p className="body text-sm text-gray-400">Todavía no hay edits de este skater. Mira sus highlights en las stories de arriba.</p>`}
      <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
-      ${list.map(v=>html`<${Card} key=${v.id} v=${v} likes=${likes(v)} liked=${!!liked[v.id]} active=${v.id===activeId} onPick=${pick} onLike=${()=>toggle(v.id)}/>`)}
+      ${list.slice(0,shown).map(v=>html`<${Card} key=${v.id} v=${v} likes=${likes(v)} liked=${!!liked[v.id]} active=${v.id===activeId} onPick=${pick} onLike=${()=>toggle(v.id)}/>`)}
      </div>
+     ${list.length>shown && html`<button onClick=${()=>setShown(n=>n+12)} className="mt-6 anton uppercase tracking-widest bg-[#f1c40f] text-black px-5 py-2 border-4 border-black hard">VER MÁS (${list.length-shown})</button>`}
     </section>
     <${Spots} onSend=${()=>document.getElementById('enviar')?.scrollIntoView({behavior:'smooth'})}/>
    </div>
@@ -533,7 +535,7 @@ const App = () => {
    CREW ARCHIVES © 2026 — SKATE AND DESTROY. Prototipo inspirado en la estética de las revistas de skate.
   </footer>
   ${story!==null && html`<${StoryViewer} start=${story.g} startI=${story.i} onClose=${()=>setStory(null)} onWatch=${id=>{setStory(null);pick(id)}}/>`}
-  ${profile && html`<${Profile} id=${profile} onClose=${()=>setProfile(null)} onFilter=${setFilter}/>`}
+  ${profile && html`<${Profile} id=${profile} onClose=${()=>setProfile(null)} onFilter=${pickFilter}/>`}
  </div>`;
 };
 ReactDOM.createRoot(document.getElementById('root')).render(html`<${App}/>`);
