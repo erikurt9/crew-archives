@@ -215,11 +215,13 @@ const Header = ({onNav}) => {
 };
 
 /* ---------- HERO ---------- */
-const Hero = ({v,likes,liked,onLike,onProfile,autoplay}) => {
+const Hero = ({v,likes,liked,onLike,onProfile,autoplay,onNext}) => {
  const [playing,setPlaying] = useState(!!(autoplay&&v.clip));
  const [progress,setProgress] = useState(0);
  const [mfb,setMfb] = useState(false);
  const vr = React.useRef(null);
+ const first = React.useRef(true);
+ useEffect(()=>{if(first.current){first.current=false;return}const el=vr.current;if(playing&&v.clip&&el&&el.dataset.i){const pr=el.play();if(pr&&pr.catch)pr.catch(()=>{el.muted=true;setMfb(true);const p2=el.play();if(p2&&p2.catch)p2.catch(()=>{})})}},[v.id]);
  useEffect(()=>{
   if(!playing||v.ig||v.clip) return;
   const t = setInterval(()=>setProgress(p=>p>=100?(setPlaying(false),0):p+0.8),100);
@@ -227,7 +229,7 @@ const Hero = ({v,likes,liked,onLike,onProfile,autoplay}) => {
  },[playing]);
  const s = skOf(v.sk);
  return html`<section className="border-4 border-white bg-[#1a1a1a] hard-r">
-  ${v.clip && playing ? html`<div className="relative bg-black border-b-4 border-white flex justify-center"><video src=${v.clip} poster=${v.poster} controls playsInline preload="auto" onEnded=${()=>setPlaying(false)} ref=${el=>{vr.current=el;if(el&&!el.dataset.i){el.dataset.i='1';const pr=el.play();if(pr&&pr.catch)pr.catch(()=>{el.muted=true;setMfb(true);const p2=el.play();if(p2&&p2.catch)p2.catch(()=>{})})}}} className="block max-h-[75vh] w-auto max-w-full"></video>${mfb && html`<button onClick=${()=>{if(vr.current)vr.current.muted=false;setMfb(false)}} className="absolute top-2 left-2 anton uppercase text-sm bg-[#f1c40f] text-black px-3 py-1 border-4 border-black hard">🔇 ACTIVAR SONIDO</button>`}</div>` : v.ig && playing ? html`<div className="bg-black border-b-4 border-white flex flex-col items-center py-3"><iframe src=${igEmbed(v.ig)} title=${v.title} className="w-full max-w-[400px] h-[560px] border-0 bg-white" allowFullScreen></iframe><button onClick=${()=>setPlaying(false)} className="mt-3 anton uppercase tracking-widest bg-[#f1c40f] text-black px-4 py-1 border-4 border-black hard">← VOLVER A LA PORTADA</button></div>` : html`<div className="relative cursor-pointer" onClick=${()=>setPlaying(!playing)}>
+  ${v.clip && playing ? html`<div className="relative bg-black border-b-4 border-white flex justify-center"><video src=${v.clip} poster=${v.poster} controls playsInline preload="auto" onEnded=${()=>{if(!(onNext&&onNext()))setPlaying(false)}} ref=${el=>{vr.current=el;if(el&&!el.dataset.i){el.dataset.i='1';const pr=el.play();if(pr&&pr.catch)pr.catch(()=>{el.muted=true;setMfb(true);const p2=el.play();if(p2&&p2.catch)p2.catch(()=>{})})}}} className="block max-h-[75vh] w-auto max-w-full"></video><button onClick=${()=>{if(!(onNext&&onNext()))setPlaying(false)}} className="absolute top-2 right-2 anton uppercase text-sm bg-white text-black px-3 py-1 border-4 border-black hard">SIGUIENTE ▶</button>${mfb && html`<button onClick=${()=>{if(vr.current)vr.current.muted=false;setMfb(false)}} className="absolute top-2 left-2 anton uppercase text-sm bg-[#f1c40f] text-black px-3 py-1 border-4 border-black hard">🔇 ACTIVAR SONIDO</button>`}</div>` : v.ig && playing ? html`<div className="bg-black border-b-4 border-white flex flex-col items-center py-3"><iframe src=${igEmbed(v.ig)} title=${v.title} className="w-full max-w-[400px] h-[560px] border-0 bg-white" allowFullScreen></iframe><button onClick=${()=>setPlaying(false)} className="mt-3 anton uppercase tracking-widest bg-[#f1c40f] text-black px-4 py-1 border-4 border-black hard">← VOLVER A LA PORTADA</button></div>` : html`<div className="relative cursor-pointer" onClick=${()=>setPlaying(!playing)}>
    <${Thumb} v=${v} big playing=${playing} progress=${progress}/>
    <div className="absolute inset-0 flex items-center justify-center">
     <div className=${'w-20 h-20 md:w-24 md:h-24 rounded-full bg-[#e63946] border-4 border-black hard flex items-center justify-center text-white hover:scale-110 transition-transform '+(playing?'opacity-50':'')}>
@@ -505,6 +507,7 @@ const App = () => {
  const active = VIDEOS.find(v=>v.id===activeId);
  const likes = v => v.likes + (liked[v.id]?1:0);
  const toggle = id => setLiked(l=>({...l,[id]:!l[id]}));
+ const nextVideo = () => {const idx=list.findIndex(x=>x.id===activeId);const n=list[idx+1];if(n){setActiveId(n.id);return true}return false};
  const pick = id => {setActiveId(id);setAuto(a=>a+1);window.scrollTo({top:0,behavior:'smooth'})};
  const nav = n => {
   const target = n.startsWith('CREW')?'crew':n==='VIDEOS'?'grid':n==='SPOTS'?'spots':null;
@@ -516,7 +519,7 @@ const App = () => {
   <main className="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_320px] gap-8">
    <div className="min-w-0">
     <${Stories} onOpen=${setStory}/>
-    <${Hero} key=${activeId+'-'+auto} autoplay=${auto>0} v=${active} likes=${likes(active)} liked=${!!liked[active.id]} onLike=${()=>toggle(active.id)} onProfile=${setProfile}/>
+    <${Hero} key=${'h'+auto} autoplay=${auto>0} onNext=${nextVideo} v=${active} likes=${likes(active)} liked=${!!liked[active.id]} onLike=${()=>toggle(active.id)} onProfile=${setProfile}/>
     <${Roster} filter=${filter} setFilter=${pickFilter} onProfile=${setProfile}/>
     <section id="grid" className="mt-8">
      <h3 className="anton text-3xl uppercase mb-4 flex items-center gap-3"><span className="bg-[#f1c40f] text-black px-2">LATEST</span> EDITS / VIDEO PARTS <span className="text-sm text-gray-400 body">(${list.length})</span></h3>
