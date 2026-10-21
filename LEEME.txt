@@ -1,16 +1,19 @@
 CREW ARCHIVES — estructura del proyecto
 
 crew-archives/
-  index.html           <- toda la página (React + Tailwind por CDN)
+  index.html           <- la página (código)
+  data.js              <- LOS DATOS: skaters, clips, spots, Hall of Fame, portada, contacto
   package.json         <- solo para:  npm run dev  (abre http://localhost:5173)
   media/
-    crew-foto.jpg      <- foto del crew (portada del video destacado)
-    droppa/            droppa-1.mp4 + droppa-1.jpg ... droppa-6
-    diego/             diego-1.mp4  + diego-1.jpg  ... diego-17
+    crew-foto.jpg  banner-glitch.gif  cover-del-mes.jpg
+    droppa/ diego/ boris/ chelo/   <skater>-N.mp4 + <skater>-N.jpg (mismo nombre)
+    spots/             spot-1.jpg, spot-2.jpg, spot-3.jpg (opcionales)
 
-Agregar más clips a un skater (ej. diego-18):
-  1. Pon media/diego/diego-18.mp4 y media/diego/diego-18.jpg (mismo nombre)
-  2. En index.html, en SKATERS, a Diego agrégale al final de hlClips:
-     ,'media/diego/diego-18.mp4'
+AGREGAR UN CLIP (lo más común):
+  1. Sube media/<skater>/<skater>-N.mp4 y media/<skater>/<skater>-N.jpg
+  2. En data.js, en 'clips' de ese skater, agrega una línea:
+     {"f": "boris-5", "short": "TRUCO", "title": "TÍTULO", "spot": "Skatepark · de noche", "dur": "0:08", "tipo": "RAILS"}
+     (tipo: RAILS · LEDGES · ESCALERAS · BAJADAS · LÍNEAS · SESIONES; 'by' = quien graba)
+  Eso crea solo: la story, la tarjeta, el filtro, el link directo (#boris-5) y el CREW TV.
 
-Para subir a GitHub:  git add .   git commit -m "..."   git push
+Para subir: git add .  /  git commit -m "..."  /  git push

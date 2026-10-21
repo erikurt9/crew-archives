@@ -59,79 +59,34 @@ section[id],#enviar{scroll-margin-top:200px}
 </head>
 <body>
 <div id="root"></div>
+<script src="data.js"></script>
 <script>
 const {useState,useEffect,useMemo} = React;
 const html = htm.bind(React.createElement);
 
-/* ---------- DATA ---------- */
-const SKATERS = [
- {id:'raspu',ig:'https://www.instagram.com/juancamolina23/',name:'Raspu',nick:'EL PÁJARO',stance:'Regular',years:9,spot:'Skatepark Los Ángeles, Ricardo Vicuña',hue:350,
-  favs:['Kickflip back lip','Frontside 180 nollie','Tre flip'],setup:{deck:'8.25" Maple 7-ply',trucks:'Independent 149',wheels:'54mm 99A',bearings:'Bones Reds'}},
- {id:'boris',ig:'https://www.instagram.com/borisgaticarojas/',hlCover:'media/boris/boris-1.jpg',hlClips:['media/boris/boris-1.mp4','media/boris/boris-2.mp4','media/boris/boris-3.mp4','media/boris/boris-4.mp4'],hlInfo:[
-  {short:'SLIDE',title:'SLIDE EN EL LEDGE',spot:'Skatepark · de noche',dur:'0:08'},
-  {short:'FLIP',title:'FLIP SOBRE EL LEDGE',spot:'Skatepark · de noche',dur:'0:04',tags:'@tourpizza.la @lostangelesteam'},
-  {short:'GRIND',title:'GRIND EN EL LEDGE',spot:'Skatepark · de noche',dur:'0:08'},
-  {short:'LEDGE',title:'TRUCOS EN EL LEDGE',spot:'Skatepark · atardecer y noche',dur:'0:15'}
- ],name:'Boris',nick:'EL ZORRO',stance:'Goofy',years:6,spot:'Parque Ecuador',hue:45,
-  favs:['Backside tailslide','Varial flip','Manual a nollie'],setup:{deck:'8.0" Maple 7-ply',trucks:'Thunder 147',wheels:'52mm 101A',bearings:'Swiss'}},
- {id:'droppa',ig:'https://www.instagram.com/dr0pp4/',hl:'https://www.instagram.com/stories/highlights/18050739551253964/',hlCover:'media/droppa/droppa-1.jpg',hlClips:['media/droppa/droppa-1.mp4','media/droppa/droppa-2.mp4','media/droppa/droppa-3.mp4','media/droppa/droppa-4.mp4','media/droppa/droppa-5.mp4','media/droppa/droppa-6.mp4'],hlInfo:[
-  {short:'OLLIE',title:'OLLIE DE NOCHE',spot:'Skatepark · de noche',dur:'0:06'},
-  {short:'RAIL SLIDE',title:'SLIDE EN EL RAIL DEL BANK',spot:'Skatepark · de día',dur:'0:11',by:'@coke_san_martin'},
-  {short:'LÍNEA',title:'LÍNEA EN EL SKATEPARK',spot:'Skatepark · de día',dur:'0:09'},
-  {short:'LEDGE',title:'GRINDS EN EL LEDGE',spot:'Skatepark · atardecer y noche',dur:'0:15'},
-  {short:'FLIP + GRIND',title:'FLIP Y GRIND EN EL BOWL',spot:'Skatepark · de día',dur:'0:15',by:'@coke_san_martin'},
-  {short:'RAIL',title:'GRIND LARGO EN EL RAIL',spot:'Skatepark · de noche',dur:'0:10'}
- ],name:'Droppa',nick:'HUESOS',stance:'Regular',years:12,spot:'Costanera Sur',hue:200,
-  favs:['Hardflip','Switch bs 180','Noseslide largo'],setup:{deck:'8.5" Maple 8-ply',trucks:'Venture 5.6',wheels:'56mm 99A',bearings:'Bronson G3'}},
- {id:'diego',ig:'https://www.instagram.com/_diego.skt/',hlCover:'media/diego/diego-1.jpg',hlClips:['media/diego/diego-1.mp4','media/diego/diego-2.mp4','media/diego/diego-3.mp4','media/diego/diego-4.mp4','media/diego/diego-5.mp4','media/diego/diego-6.mp4','media/diego/diego-7.mp4','media/diego/diego-8.mp4','media/diego/diego-9.mp4','media/diego/diego-10.mp4','media/diego/diego-11.mp4','media/diego/diego-12.mp4','media/diego/diego-13.mp4','media/diego/diego-14.mp4','media/diego/diego-15.mp4','media/diego/diego-16.mp4','media/diego/diego-17.mp4'],hlInfo:[
-  {short:'ESCALERAS',title:'BAJANDO LAS ESCALERAS',spot:'Escaleras frente a un Santander',dur:'0:06',by:'@sktvchile'},
-  {short:'CAÍDA',title:'DE NUEVO ME GANÓ EL SPOT',spot:'Escalones en una plaza',dur:'0:03'},
-  {short:'LÍNEA',title:'LÍNEA POR EL CENTRO',spot:'Centro · galería techada',dur:'0:12'},
-  {short:'BAJADA',title:'BAJADA DE NOCHE',spot:'Rampa de estacionamiento · de noche',dur:'0:08'},
-  {short:'WEDGE',title:'SESIÓN NOCTURNA EN EL WEDGE',spot:'Skatepark · de noche',dur:'0:11',by:'@juancamolina23'},
-  {short:'NOCTURNA',title:'SESIÓN NOCTURNA',spot:'Skatepark · poca luz',dur:'0:05'},
-  {short:'BANCA',title:'TRUCOS EN LA BANCA',spot:'Plaza · de noche',dur:'0:15'},
-  {short:'CICLOVÍA',title:'RODANDO POR LA CICLOVÍA',spot:'Ciclovía · atardecer',dur:'0:15'},
-  {short:'RODADA',title:'RODADA NOCTURNA',spot:'Plaza con bolardos · de noche',dur:'0:10'},
-  {short:'MONTAJE',title:'MONTAJE STREET',spot:'Varios spots',dur:'0:14'},
-  {short:'SESIÓN',title:'SESIÓN EN EL SKATEPARK',spot:'Skatepark · de noche',dur:'0:14'},
-  {short:'LEDGE',title:'GRIND EN EL CANTERO',spot:'Plaza · de día',dur:'0:05'},
-  {short:'GRIND',title:'GRIND EN EL BLOQUE',spot:'Calle · de noche',dur:'0:08'},
-  {short:'SESH',title:'ESTUVO WENA LA SESH',spot:'Skatepark · de noche',dur:'0:15',tags:'@ivancifuentesvalen @ffffilips @ben.ja_dh'},
-  {short:'CALLE',title:'RODADA DE NOCHE',spot:'Calle · de noche',dur:'0:28',by:'@dr0pp4'},
-  {short:'PLAZA',title:'LÍNEA POR LA PLAZA',spot:'Plaza del centro · de día',dur:'0:07',by:'@dr0pp4'},
-  {short:'BOX',title:'SLIDE EN EL BOX',spot:'Skatepark · de noche',dur:'0:08'}
- ],name:'Diego',nick:'EL TIGRE',stance:'Goofy',years:4,spot:'Skatepark Los Ángeles, Ricardo Vicuña',hue:280,
-  favs:['Fs boardslide','Ollie al gap','Bs bigspin'],setup:{deck:'7.875" Maple 7-ply',trucks:'Independent 139',wheels:'53mm 100A',bearings:'Bones Swiss'}},
- {id:'chelo',ig:'https://www.instagram.com/chelo_cataclysmic/',hlCover:'media/chelo/chelo-1.jpg',hlClips:['media/chelo/chelo-1.mp4','media/chelo/chelo-2.mp4','media/chelo/chelo-3.mp4','media/chelo/chelo-4.mp4','media/chelo/chelo-5.mp4','media/chelo/chelo-6.mp4','media/chelo/chelo-7.mp4'],hlInfo:[
-  {short:'BAJADA',title:'BAJADA AL ATARDECER',spot:'Calles con pendiente · atardecer',dur:'0:50'},
-  {short:'MONTAJE',title:'SESIÓN NOCTURNA EN EL SKATEPARK',spot:'Skatepark · de noche',dur:'0:37'},
-  {short:'RAILS',title:'MONTAJE DE RAILS',spot:'Skatepark · de noche y de día',dur:'0:42'},
-  {short:'SLIDES',title:'SLIDES EN LOS RAILS',spot:'Skatepark · atardecer y noche',dur:'0:23'},
-  {short:'SESIÓN',title:'SESIÓN NOCTURNA CON LA CREW',spot:'Skatepark · de noche',dur:'0:43'},
-  {short:'ESCALERAS',title:'BAJANDO LAS ESCALERAS',spot:'Skatepark · escaleras con baranda',dur:'0:08',by:'@chelo_cataclysmic'},
-  {short:'LEDGE',title:'LEDGES Y UNA CAÍDA',spot:'Skatepark · de día',dur:'0:20',fit:'contain'}
- ],name:'Chelo',nick:'',stance:'',years:'',spot:'',hue:160,favs:[],setup:{}}
-];
-/* video del mes (el reproductor principal arranca con este) */
-const FEATURED = {id:1,short:'RAIL',ig:'',sk:'droppa',title:'GRIND LARGO EN EL RAIL',spot:'Skatepark · de noche',filmer:'',date:'OCT 2026',dur:'0:10',likes:0,tag:'CLIP',desc:'Un grind largo en un rail, de noche, con las luces del skatepark.',clip:'media/droppa/droppa-6.mp4',poster:'media/droppa/droppa-6.jpg',thumb:'media/droppa/droppa-6-card.jpg'};
-/* Hall of Fame = clips reales (skater + número de clip de su highlight). Cámbialos aquí. */
-const HOF = [{sk:'droppa',n:6},{sk:'droppa',n:2},{sk:'boris',n:2},{sk:'chelo',n:6},{sk:'diego',n:1}];
-/* Portada del mes: foto en media/ + a quién y qué truco */
-const COVER = {img:'media/cover-del-mes.jpg',name:'CHELO',title:'ESCALERAS'};
-/* Formulario de clips: pon UNO (whatsapp con código de país y sin +, ej. '56912345678'; o email; o instagram sin @) */
-const CONTACT = {whatsapp:'',email:'',instagram:''};
+/* ---------- DATA (viene de data.js) ---------- */
+const CREW = window.CREW;
+const M = p => (window.MEDIA_MAP&&window.MEDIA_MAP[p])||p;
+const TIPOS = ['RAILS','LEDGES','ESCALERAS','BAJADAS','LÍNEAS','SESIONES'];
+const SKATERS = CREW.skaters.map(k=>{const cl=k.clips||[];const cv=k.cover||(cl[0]&&cl[0].f);return {...k,hlCover:cl.length?M('media/'+k.id+'/'+cv+'.jpg'):undefined,hlClips:cl.length?cl.map(c=>M('media/'+k.id+'/'+c.f+'.mp4')):undefined,hlInfo:cl}});
+const HOF = CREW.hof;
+const COVER = {...CREW.cover,img:M(CREW.cover.img)};
+const CONTACT = CREW.contact;
 const skOf = id => SKATERS.find(s=>s.id===id);
-const hlItems = k => (k.hlClips||[]).map((c,n)=>{const f=(k.hlInfo||[])[n]||{};return {id:'hl-'+k.id+'-'+n,sk:k.id,short:f.short||'TRICK '+(n+1),title:f.title||k.name.toUpperCase()+' TRICK '+(n+1),spot:f.spot||'Highlight · '+k.name,dur:f.dur||'',by:f.by,tags:f.tags,fit:f.fit,date:'HIGHLIGHT',clip:c,poster:/\.mp4$/.test(c)?c.replace(/\.mp4$/,'.jpg'):undefined,hlOnly:true}});
+const hlItems = k => (k.hlClips||[]).map((c,n)=>{const f=(k.hlInfo||[])[n]||{};return {id:'hl-'+k.id+'-'+n,sk:k.id,short:f.short||'TRICK '+(n+1),title:f.title||k.name.toUpperCase()+' TRICK '+(n+1),spot:f.spot||'Highlight · '+k.name,dur:f.dur||'',by:f.by,tags:f.tags,fit:f.fit,date:'HIGHLIGHT',clip:c,poster:f.f?M('media/'+k.id+'/'+f.f+'.jpg'):undefined,slug:f.f,tipo:f.tipo,hlOnly:true}});
 /* lista de stories: solo highlights con clips reales, en el mismo orden que los círculos (el de SKATERS) */
 const STORY_GROUPS = SKATERS.filter(k=>k.hlClips&&k.hlClips.length).map(hlItems);
 const secs = d => { const [m,x] = (d||'0:0').split(':'); return (+m)*60+(+x) };
+const FEAT = CREW.featured;
+const FI = STORY_GROUPS.flat().find(it=>it.slug===FEAT.slug) || STORY_GROUPS[0][0];
+/* video del mes (el reproductor principal arranca con este) */
+const FEATURED = {id:1,short:FI.short,ig:'',sk:FI.sk,title:FI.title,spot:FI.spot,filmer:FI.by||'',tags:FI.tags,date:FEAT.date||'',dur:FI.dur,likes:0,tag:'CLIP',desc:FEAT.desc||'',clip:FI.clip,poster:FI.poster,thumb:FEAT.thumb?M(FEAT.thumb):FI.poster,slug:FI.slug,tipo:FI.tipo,fit:FI.fit};
 /* una tarjeta por cada clip de los highlights (intercalando skaters); el del mes va primero */
-const clipVideos = () => { const out=[]; const max=Math.max(...STORY_GROUPS.map(g=>g.length)); for(let n=0;n<max;n++) STORY_GROUPS.forEach(g=>{const it=g[n]; if(it && it.clip!==FEATURED.clip) out.push({id:it.id,short:it.short,ig:'',sk:it.sk,title:it.title,spot:it.spot,filmer:it.by||'',tags:it.tags,date:'',dur:it.dur,likes:0,tag:secs(it.dur)>=30?'EDIT':'CLIP',desc:'',clip:it.clip,poster:it.poster,thumb:it.poster,fit:it.fit})}); return out };
+const clipVideos = () => { const out=[]; const max=Math.max(...STORY_GROUPS.map(g=>g.length)); for(let n=0;n<max;n++) STORY_GROUPS.forEach(g=>{const it=g[n]; if(it && it.clip!==FEATURED.clip) out.push({id:it.id,short:it.short,ig:'',sk:it.sk,title:it.title,spot:it.spot,filmer:it.by||'',tags:it.tags,date:'',dur:it.dur,likes:0,tag:secs(it.dur)>=30?'EDIT':'CLIP',desc:'',clip:it.clip,poster:it.poster,thumb:it.poster,fit:it.fit,slug:it.slug,tipo:it.tipo})}); return out };
 const VIDEOS = [FEATURED, ...clipVideos()];
 const igEmbed = u => u.split('?')[0].replace(/\/$/,'')+'/embed';
 
-const CREW_FOTOS = ['media/crew-foto.jpg','crew-foto.jpg','media/crew-foto.png','media/crew-foto.jpeg'];
+const CREW_FOTOS = ['media/crew-foto.jpg','crew-foto.jpg','media/crew-foto.png','media/crew-foto.jpeg'].map(M);
 
 /* ---------- ICONS ---------- */
 const Ic = ({d,size=20,fill='none'}) => html`<svg width=${size} height=${size} viewBox="0 0 24 24" fill=${fill} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" dangerouslySetInnerHTML=${{__html:d}}/>`;
@@ -192,7 +147,7 @@ const Header = ({onNav}) => {
   <div className="bg-[#f1c40f] text-black text-center text-xs body font-black py-1 tracking-widest">★ CREW ARCHIVES — NUEVA EDICIÓN Nº 07 YA ESTÁ AFUERA — PATINA O MUERE ★</div>
   <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
    <div className="cursor-pointer min-w-0 w-full" onClick=${()=>{zap();window.scrollTo({top:0,behavior:'smooth'})}}>
-    ${gif ? html`<img src="media/banner-glitch.gif" width="1076" height="155" alt="Skate and Destroy — Local Crew Magazine Vol. I" onError=${()=>setGif(false)} className="block h-auto w-full max-w-[717px]" style=${{marginLeft:'calc(min(100%,717px) * -0.0167)'}}/>` : html`<div className="flex items-center gap-3 min-w-0">
+    ${gif ? html`<img src=${M('media/banner-glitch.gif')} width="1076" height="155" alt="Skate and Destroy — Local Crew Magazine Vol. I" onError=${()=>setGif(false)} className="block h-auto w-full max-w-[717px]" style=${{marginLeft:'calc(min(100%,717px) * -0.0167)'}}/>` : html`<div className="flex items-center gap-3 min-w-0">
     <div className="w-11 h-11 md:w-16 md:h-16 shrink-0 flex items-center justify-center" style=${{background:'repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 1px,transparent 1px 4px),#e8202a',border:'3px solid #7a0e14',boxShadow:'3px 3px 0 #000'}}><${SkullMark} size=${40}/></div>
     <div className="min-w-0">
      <div className=${'glitch'+(burst?' gl-now':'')}>
@@ -216,6 +171,10 @@ const Header = ({onNav}) => {
 
 /* ---------- HERO ---------- */
 const Hero = ({v,likes,liked,onLike,onProfile,autoplay,onNext}) => {
+ const [copied,setCopied] = useState(false);
+ const link = () => location.href.split('#')[0]+'#'+(v.slug||'');
+ const share = async () => { const data={title:'CREW ARCHIVES — '+v.title,text:skOf(v.sk).name+' · '+v.title,url:link()}; if(navigator.share){try{await navigator.share(data);return}catch(e){}} window.open('https://wa.me/?text='+encodeURIComponent(data.text+' '+data.url),'_blank','noopener') };
+ const copyLink = () => { try{navigator.clipboard.writeText(link())}catch(e){} setCopied(true); setTimeout(()=>setCopied(false),1800) };
  const [playing,setPlaying] = useState(!!(autoplay&&v.clip));
  const [progress,setProgress] = useState(0);
  const [mfb,setMfb] = useState(false);
@@ -253,12 +212,16 @@ const Hero = ({v,likes,liked,onLike,onProfile,autoplay,onNext}) => {
    <button onClick=${onLike} className=${'anton uppercase tracking-widest text-lg px-5 py-2 border-4 border-black hard flex items-center gap-2 active:translate-x-1 active:translate-y-1 active:shadow-none transition '+(liked?'bg-[#e63946] text-white':'bg-[#f1c40f] text-black')}>
     <${Ic} d=${I.flame} fill=${liked?'currentColor':'none'}/> STOKE · ${likes}
    </button>
+   <div className="flex flex-wrap gap-2 mt-3">
+    <button onClick=${share} className="anton uppercase tracking-wider text-sm bg-white text-black px-3 py-1.5 border-4 border-black hard">COMPARTIR ↗</button>
+    <button onClick=${copyLink} className="anton uppercase tracking-wider text-sm bg-[#222] text-white px-3 py-1.5 border-4 border-black hard">${copied?'¡LINK COPIADO!':'COPIAR LINK'}</button>
+   </div>
   </div>
  </section>`;
 };
 
 /* ---------- ROSTER ---------- */
-const Roster = ({filter,setFilter,onProfile}) => {
+const Roster = ({filter,setFilter,onProfile,tipo,setTipo,tipoCounts,onPlayAll}) => {
  const s = filter==='all'?null:skOf(filter);
  return html`<section id="crew" className="mt-10">
   <h3 className="anton text-3xl uppercase mb-3 flex items-center gap-3"><span className="bg-[#e63946] px-2 text-black">THE CREW</span> FILTRA POR SKATER</h3>
@@ -266,11 +229,12 @@ const Roster = ({filter,setFilter,onProfile}) => {
    <button onClick=${()=>setFilter('all')} className=${'anton uppercase tracking-wider px-4 py-2 border-4 border-black hard '+(filter==='all'?'bg-[#f1c40f] text-black':'bg-[#222] text-white hover:bg-[#333]')}>TODOS</button>
    ${SKATERS.map(k=>html`<button key=${k.id} onClick=${()=>setFilter(k.id)} className=${'anton uppercase tracking-wider px-4 py-2 border-4 border-black hard '+(filter===k.id?'bg-[#e63946] text-white':'bg-[#222] text-white hover:bg-[#333]')}>${k.name}</button>`)}
   </div>
+  <div className="flex flex-wrap gap-2 mb-4 items-center"><span className="anton text-sm text-gray-400 mr-1">TIPO:</span>${['all',...TIPOS].map(t=>html`<button key=${t} onClick=${()=>setTipo(t)} className=${'anton uppercase text-sm tracking-wider px-3 py-1 border-4 border-black '+(tipo===t?'bg-[#f1c40f] text-black':'bg-[#222] text-white hover:bg-[#333]')}>${t==='all'?'TODOS':t} (${tipoCounts[t]||0})</button>`)}</div>
   ${s && html`<div className="border-4 border-[#f1c40f] bg-[#1a1a1a] p-4 body grid md:grid-cols-3 gap-4">
    <div>
     <div className="anton text-4xl uppercase" style=${{color:`hsl(${s.hue} 80% 60%)`}}>${s.name}</div>
     ${s.nick && html`<div className="marker text-[#f1c40f]">"${s.nick}"</div>`}
-    <button onClick=${()=>onProfile(s.id)} className="mt-3 anton uppercase bg-white text-black px-3 py-1 border-2 border-black hard">VER FICHA</button>
+    <div className="flex flex-wrap gap-2 mt-3"><button onClick=${()=>onProfile(s.id)} className="anton uppercase bg-white text-black px-3 py-1 border-2 border-black hard">VER FICHA</button>${VIDEOS.some(v=>v.sk===s.id) && html`<button onClick=${()=>onPlayAll(s.id)} className="anton uppercase bg-[#e63946] text-white px-3 py-1 border-2 border-black hard">▶ VER TODO</button>`}</div>
    </div>
    <div className="grid grid-cols-3 gap-2 text-center">
     ${[['STANCE',s.stance||'—'],['AÑOS',s.years||'—'],['PARTES',VIDEOS.filter(v=>v.sk===s.id).length]].map(([a,b])=>html`<div key=${a} className="border-2 border-[#444] p-2"><div className="text-[10px] text-gray-400">${a}</div><div className="anton text-xl">${b}</div></div>`)}
@@ -359,11 +323,7 @@ const StoryViewer = ({start,startI,onClose,onWatch}) => {
 
 /* ---------- SPOTS ---------- */
 /* foto: archivo en media/spots/ (ej. spot-1.jpg). cred: quién tomó la foto, ej. '@usuario' (opcional) */
-const SPOTS = [
- {n:'01',name:'Skatepark Los Ángeles',sector:'Parque Ricardo Vicuña',lat:-37.4725625,lng:-72.3547344,pid:'ChIJdZCj2Enda5YR34IXwx805zQ',foto:'media/spots/spot-1.jpg',cred:''},
- {n:'02',name:'Skatepark N.º 2',sector:'Parque Estero Quilque · Costanera Quilque Norte',lat:-37.4694021,lng:-72.379533,pid:'ChIJAc3fDADda5YRceyy6Duk-VM',foto:'media/spots/spot-2.jpg',cred:''},
- {n:'03',name:'Skatepark Paillihue',sector:'Paillihue · sector Plaza General Bernales',lat:-37.4885375,lng:-72.3327031,pid:'ChIJw7uRZQDDa5YRWFIxGuWgl6o',foto:'media/spots/spot-3.jpg',cred:''}
-];
+const SPOTS = CREW.spots.map(s=>({...s,foto:s.foto?M(s.foto):undefined}));
 const mapsUrl = s => `https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lng}&query_place_id=${s.pid}`;
 const dirUrl = s => `https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lng}&destination_place_id=${s.pid}`;
 const SpotCard = ({s}) => {
@@ -460,7 +420,7 @@ const Sidebar = ({onOpen}) => {
 };
 
 /* ---------- MODAL ---------- */
-const Profile = ({id,onClose,onFilter}) => {
+const Profile = ({id,onClose,onFilter,onPlayAll}) => {
  const s = skOf(id);
  const vids = VIDEOS.filter(v=>v.sk===id);
  useEffect(()=>{const o=document.body.style.overflow;document.body.style.overflow='hidden';return ()=>{document.body.style.overflow=o}},[]);
@@ -487,26 +447,87 @@ const Profile = ({id,onClose,onFilter}) => {
     <div className="anton uppercase text-[#f1c40f] text-lg mb-2">EDITS (${vids.length})</div>
     ${vids.length===0 && html`<p className="text-sm text-gray-400 mb-4">Todavía no hay edits de ${s.name}. Mira sus highlights en las stories de arriba.</p>`}
     <ul className="space-y-1 mb-4">${vids.map(v=>html`<li key=${v.id} className="text-sm flex justify-between gap-2"><span>▶ ${v.title}</span><span className="text-gray-400">${v.dur}</span></li>`)}</ul>
-    <button onClick=${()=>{onFilter(id);onClose()}} className="anton uppercase tracking-widest bg-[#f1c40f] text-black px-4 py-2 border-4 border-black hard">FILTRAR SOLO A ${s.name}</button>
+    <div className="flex flex-wrap gap-2">${vids.length>0 && html`<button onClick=${()=>onPlayAll(id)} className="anton uppercase tracking-widest bg-[#e63946] text-white px-4 py-2 border-4 border-black hard">▶ VER TODO</button>`}<button onClick=${()=>{onFilter(id);onClose()}} className="anton uppercase tracking-widest bg-[#f1c40f] text-black px-4 py-2 border-4 border-black hard">FILTRAR SOLO A ${s.name}</button></div>
    </div>
   </div>
  </div>`;
 };
 
+/* ---------- CREW TV ---------- */
+const CrewTV = ({items,onClose}) => {
+ const [i,setI] = useState(0);
+ const [mute,setMute] = useState(false);
+ const vr = React.useRef(null);
+ const v = items[i]; const k = skOf(v.sk);
+ const next = () => setI(x=>(x+1)%items.length);
+ const prev = () => setI(x=>(x-1+items.length)%items.length);
+ useEffect(()=>{
+  const o=document.body.style.overflow; document.body.style.overflow='hidden';
+  const h=e=>{if(e.key==='Escape')onClose();else if(e.key==='ArrowRight')next();else if(e.key==='ArrowLeft')prev()};
+  window.addEventListener('keydown',h);
+  return ()=>{document.body.style.overflow=o;window.removeEventListener('keydown',h)};
+ },[]);
+ useEffect(()=>{const el=vr.current;if(!el)return;const pr=el.play();if(pr&&pr.catch)pr.catch(()=>{el.muted=true;setMute(true);const p2=el.play();if(p2&&p2.catch)p2.catch(()=>{})})},[i]);
+ return html`<div className="fixed inset-0 z-50 bg-black flex items-center justify-center ov">
+  <video ref=${el=>{vr.current=el}} src=${v.clip} poster=${v.poster} playsInline muted=${mute} onEnded=${next} className="max-h-full max-w-full"></video>
+  <div className="absolute top-0 inset-x-0 p-3 flex items-center justify-between bg-gradient-to-b from-black/80 to-transparent">
+   <span className="anton text-xl"><span className="text-[#e63946]">●</span> CREW TV <span className="body text-xs text-gray-300">${i+1}/${items.length}</span></span>
+   <button onClick=${onClose} aria-label="Cerrar" className="border-2 border-white p-1"><${Ic} d=${I.x} size=${18}/></button>
+  </div>
+  <div className="absolute bottom-0 inset-x-0 p-4 pb-6 bg-gradient-to-t from-black/90 to-transparent">
+   <div className="marker text-[#f1c40f] text-lg">${k.name}</div>
+   <div className="anton text-2xl uppercase leading-tight">${v.title}</div>
+   <div className="body text-xs text-gray-300 mt-1">${v.spot}</div>
+   <div className="flex flex-wrap gap-2 mt-3">
+    <button onClick=${prev} className="anton uppercase text-sm bg-white text-black px-3 py-1 border-4 border-black hard">◀ ANTERIOR</button>
+    <button onClick=${next} className="anton uppercase text-sm bg-white text-black px-3 py-1 border-4 border-black hard">SIGUIENTE ▶</button>
+    <button onClick=${()=>{setMute(m=>{if(vr.current)vr.current.muted=!m;return !m})}} className="anton uppercase text-sm bg-[#f1c40f] text-black px-3 py-1 border-4 border-black hard">${mute?'🔇 SIN SONIDO':'🔊 SONIDO'}</button>
+   </div>
+  </div>
+ </div>`;
+};
+
+/* ---------- FILMERS ---------- */
+const FILMERS = (()=>{const m={};VIDEOS.forEach(v=>{if(v.filmer)(m[v.filmer]=m[v.filmer]||[]).push(v)});return Object.entries(m).map(([h,vs])=>({h,vs,who:[...new Set(vs.map(x=>skOf(x.sk).name))]}))})();
+const Filmers = ({onPlay}) => FILMERS.length===0 ? null : html`<section id="filmers" className="mt-10">
+ <h3 className="anton text-3xl uppercase mb-1 flex flex-wrap items-center gap-x-3 gap-y-1"><span className="bg-[#f1c40f] text-black px-2">FILMERS</span> QUIENES GRABAN</h3>
+ <p className="body text-sm text-gray-400 mb-3">Cuentas que aparecen como crédito en los clips.</p>
+ <div className="grid sm:grid-cols-2 gap-5">
+  ${FILMERS.map(f=>html`<article key=${f.h} className="border-4 border-black bg-[#1a1a1a] hard p-4 body">
+   <h4 className="anton text-2xl break-all">${f.h}</h4>
+   <p className="text-sm text-gray-400 mt-1">${f.vs.length} ${f.vs.length===1?'clip':'clips'} · con ${f.who.join(', ')}</p>
+   <div className="flex flex-wrap gap-2 mt-4">
+    <button onClick=${()=>onPlay(f.h)} className="anton uppercase tracking-wider text-sm bg-[#e63946] text-white px-3 py-1.5 border-4 border-black hard">▶ VER SUS CLIPS</button>
+    <a href=${'https://www.instagram.com/'+f.h.replace('@','')+'/'} target="_blank" rel="noopener noreferrer" className="anton uppercase tracking-wider text-sm bg-white text-black px-3 py-1.5 border-4 border-black hard">INSTAGRAM ↗</a>
+   </div>
+  </article>`)}
+ </div>
+</section>`;
+
 /* ---------- APP ---------- */
 const App = () => {
  const [filter,setFilter] = useState('all');
- const [activeId,setActiveId] = useState(1);
- const [liked,setLiked] = useState({});
+ const [activeId,setActiveId] = useState(()=>{const h=(location.hash||'').slice(1);const m=VIDEOS.find(v=>v.slug===h);return m?m.id:1});
+ const [tipo,setTipo] = useState('all');
+ const [filmer,setFilmer] = useState('');
+ const [tv,setTv] = useState(false);
+ const [liked,setLiked] = useState(()=>{try{return JSON.parse(localStorage.getItem('ca-stoke')||'{}')}catch(e){return {}}});
  const [profile,setProfile] = useState(null);
  const [story,setStory] = useState(null);
  const [auto,setAuto] = useState(0);
  const [shown,setShown] = useState(12);
- const list = useMemo(()=>filter==='all'?VIDEOS:VIDEOS.filter(v=>v.sk===filter),[filter]);
+ const list = useMemo(()=>VIDEOS.filter(v=>(filter==='all'||v.sk===filter)&&(tipo==='all'||v.tipo===tipo)&&(!filmer||v.filmer===filmer)),[filter,tipo,filmer]);
+ const tipoCounts = useMemo(()=>{const base=VIDEOS.filter(v=>(filter==='all'||v.sk===filter)&&(!filmer||v.filmer===filmer));const c={all:base.length};TIPOS.forEach(t=>{c[t]=base.filter(v=>v.tipo===t).length});return c},[filter,filmer]);
  const pickFilter = f => {setFilter(f);setShown(12)};
+ const pickTipo = t => {setTipo(t);setShown(12)};
  const active = VIDEOS.find(v=>v.id===activeId);
  const likes = v => v.likes + (liked[v.id]?1:0);
- const toggle = id => setLiked(l=>({...l,[id]:!l[id]}));
+ const toggle = id => setLiked(l=>{const n={...l,[id]:!l[id]};try{localStorage.setItem('ca-stoke',JSON.stringify(n))}catch(e){}return n});
+ const firstRun = React.useRef(true);
+ useEffect(()=>{if(firstRun.current){firstRun.current=false;return}try{history.replaceState(null,'','#'+active.slug)}catch(e){}},[activeId]);
+ const goTop = () => window.scrollTo({top:0,behavior:'smooth'});
+ const playAll = sk => {const first=VIDEOS.find(v=>v.sk===sk);if(!first)return;setFilter(sk);setTipo('all');setFilmer('');setShown(12);setActiveId(first.id);setAuto(a=>a+1);goTop()};
+ const playFilmer = h => {const first=VIDEOS.find(v=>v.filmer===h);if(!first)return;setFilmer(h);setFilter('all');setTipo('all');setShown(12);setActiveId(first.id);setAuto(a=>a+1);goTop()};
  const nextVideo = () => {const idx=list.findIndex(x=>x.id===activeId);const n=list[idx+1];if(n){setActiveId(n.id);return true}return false};
  const pick = id => {setActiveId(id);setAuto(a=>a+1);window.scrollTo({top:0,behavior:'smooth'})};
  const nav = n => {
@@ -520,9 +541,10 @@ const App = () => {
    <div className="min-w-0">
     <${Stories} onOpen=${setStory}/>
     <${Hero} key=${'h'+auto} autoplay=${auto>0} onNext=${nextVideo} v=${active} likes=${likes(active)} liked=${!!liked[active.id]} onLike=${()=>toggle(active.id)} onProfile=${setProfile}/>
-    <${Roster} filter=${filter} setFilter=${pickFilter} onProfile=${setProfile}/>
+    <${Roster} filter=${filter} setFilter=${pickFilter} onProfile=${setProfile} tipo=${tipo} setTipo=${pickTipo} tipoCounts=${tipoCounts} onPlayAll=${playAll}/>
     <section id="grid" className="mt-8">
-     <h3 className="anton text-3xl uppercase mb-4 flex items-center gap-3"><span className="bg-[#f1c40f] text-black px-2">LATEST</span> EDITS / VIDEO PARTS <span className="text-sm text-gray-400 body">(${list.length})</span></h3>
+     <h3 className="anton text-3xl uppercase mb-4 flex flex-wrap items-center gap-3"><span className="bg-[#f1c40f] text-black px-2">LATEST</span> EDITS / VIDEO PARTS <span className="text-sm text-gray-400 body">(${list.length})</span><button onClick=${()=>setTv(true)} className="ml-auto anton uppercase tracking-wider text-sm bg-[#e63946] text-white px-3 py-1 border-4 border-black hard">📺 CREW TV</button></h3>
+     ${filmer && html`<div className="mb-3"><button onClick=${()=>setFilmer('')} className="anton uppercase text-sm bg-[#222] text-white px-3 py-1 border-4 border-black hard">FILMER: ${filmer} ✕</button></div>`}
      ${list.length===0 && html`<p className="body text-sm text-gray-400">Todavía no hay edits de este skater. Mira sus highlights en las stories de arriba.</p>`}
      <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
       ${list.slice(0,shown).map(v=>html`<${Card} key=${v.id} v=${v} likes=${likes(v)} liked=${!!liked[v.id]} active=${v.id===activeId} onPick=${pick} onLike=${()=>toggle(v.id)}/>`)}
@@ -530,6 +552,7 @@ const App = () => {
      ${list.length>shown && html`<button onClick=${()=>setShown(n=>n+12)} className="mt-6 anton uppercase tracking-widest bg-[#f1c40f] text-black px-5 py-2 border-4 border-black hard">VER MÁS (${list.length-shown})</button>`}
     </section>
     <${Spots} onSend=${()=>document.getElementById('enviar')?.scrollIntoView({behavior:'smooth'})}/>
+    <${Filmers} onPlay=${playFilmer}/>
    </div>
    <${Sidebar} onOpen=${setStory}/>
   </main>
@@ -538,7 +561,8 @@ const App = () => {
    CREW ARCHIVES © 2026 — SKATE AND DESTROY. Prototipo inspirado en la estética de las revistas de skate.
   </footer>
   ${story!==null && html`<${StoryViewer} start=${story.g} startI=${story.i} onClose=${()=>setStory(null)} onWatch=${id=>{setStory(null);pick(id)}}/>`}
-  ${profile && html`<${Profile} id=${profile} onClose=${()=>setProfile(null)} onFilter=${pickFilter}/>`}
+  ${tv && html`<${CrewTV} items=${list.length?list:VIDEOS} onClose=${()=>setTv(false)}/>`}
+  ${profile && html`<${Profile} id=${profile} onClose=${()=>setProfile(null)} onFilter=${pickFilter} onPlayAll=${id=>{setProfile(null);playAll(id)}}/>`}
  </div>`;
 };
 ReactDOM.createRoot(document.getElementById('root')).render(html`<${App}/>`);
