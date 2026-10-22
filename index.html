@@ -205,7 +205,7 @@ const Hero = ({v,likes,liked,onLike,onProfile,autoplay,onNext}) => {
    <h2 className="anton text-3xl md:text-5xl uppercase leading-none mb-3">${v.title}</h2>
    <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm mb-3">
     <button onClick=${()=>onProfile(s.id)} className="underline decoration-[#f1c40f] decoration-2 hover:text-[#f1c40f]"><b className="text-[#f1c40f]">SKATER:</b> ${s.name}</button>
-    ${v.filmer && html`<span><b className="text-[#f1c40f]">FILMER:</b> ${v.filmer}</span>`}
+    <span><b className="text-[#f1c40f]">FILMER:</b> ${v.filmer||'?'}</span>
     ${v.tags && html`<span><b className="text-[#f1c40f]">CON:</b> ${v.tags}</span>`}
    </div>
    ${v.desc && html`<p className="text-gray-300 mb-4 max-w-3xl">${v.desc}</p>`}
@@ -233,18 +233,18 @@ const Roster = ({filter,setFilter,onProfile,tipo,setTipo,tipoCounts,onPlayAll}) 
   ${s && html`<div className="border-4 border-[#f1c40f] bg-[#1a1a1a] p-4 body grid md:grid-cols-3 gap-4">
    <div>
     <div className="anton text-4xl uppercase" style=${{color:`hsl(${s.hue} 80% 60%)`}}>${s.name}</div>
-    ${s.nick && html`<div className="marker text-[#f1c40f]">"${s.nick}"</div>`}
+    <div className="marker text-[#f1c40f]">"${s.nick||'?'}"</div>
     <div className="flex flex-wrap gap-2 mt-3"><button onClick=${()=>onProfile(s.id)} className="anton uppercase bg-white text-black px-3 py-1 border-2 border-black hard">VER FICHA</button>${VIDEOS.some(v=>v.sk===s.id) && html`<button onClick=${()=>onPlayAll(s.id)} className="anton uppercase bg-[#e63946] text-white px-3 py-1 border-2 border-black hard">▶ VER TODO</button>`}</div>
    </div>
    <div className="grid grid-cols-3 gap-2 text-center">
-    ${[['STANCE',s.stance||'—'],['AÑOS',s.years||'—'],['PARTES',VIDEOS.filter(v=>v.sk===s.id).length]].map(([a,b])=>html`<div key=${a} className="border-2 border-[#444] p-2"><div className="text-[10px] text-gray-400">${a}</div><div className="anton text-xl">${b}</div></div>`)}
+    ${[['STANCE',s.stance||'?'],['AÑOS',s.years||'?'],['PARTES',VIDEOS.filter(v=>v.sk===s.id).length]].map(([a,b])=>html`<div key=${a} className="border-2 border-[#444] p-2"><div className="text-[10px] text-gray-400">${a}</div><div className="anton text-xl">${b}</div></div>`)}
    </div>
-   ${s.favs.length>0 && html`<div>
-    <div className="text-xs text-gray-400 mb-1">FOTOS DE TRUCOS</div>
-    <div className="grid grid-cols-3 gap-2">
+   <div>
+    <div className="text-xs text-gray-400 mb-1">TRUCOS FAVORITOS</div>
+    <div className="grid grid-cols-3 gap-2">${s.favs.length===0 && html`<div className="anton text-4xl text-gray-500">?</div>`}
      ${s.favs.map((f,i)=>html`<div key=${f} title=${f} className="aspect-square grain border-2 border-black flex items-end p-1 text-[9px] font-black leading-tight" style=${{background:`linear-gradient(${135+i*50}deg,hsl(${s.hue+i*25} 70% 30%),#000)`}}>${f}</div>`)}
     </div>
-   </div>`}
+   </div>
   </div>`}
  </section>`;
 };
@@ -304,7 +304,7 @@ const StoryViewer = ({start,startI,onClose,onWatch}) => {
     <div className="flex items-center justify-between mt-3 body text-xs font-bold"><span>${k.name} · ${v.date}</span><div className="flex gap-2 pointer-events-auto">${v.clip && html`<button onClick=${()=>setMute(!mute)} className="border-2 border-white px-1.5 text-[10px] font-black">${mute?'SIN SONIDO':'SONIDO ON'}</button>`}<button onClick=${onClose} className="border-2 border-white p-0.5"><${Ic} d=${I.x} size=${16}/></button></div></div>
    </div>
    <div className="relative z-10 px-4 pointer-events-none">
-    ${k.nick && html`<div className="marker text-[#f1c40f] text-xl mb-2">"${k.nick}"</div>`}
+    <div className="marker text-[#f1c40f] text-xl mb-2">"${k.nick||'?'}"</div>
     <div className="anton text-5xl st-big uppercase leading-none" style=${{textShadow:'4px 4px 0 #000'}}>${v.short}</div>
     <div className="body text-sm mt-3 font-bold st-sub">${v.title}</div>
     <div className="body text-xs text-gray-300 mt-1 st-sub">${v.spot}${v.dur?' · '+v.dur:''}</div>
@@ -428,21 +428,21 @@ const Profile = ({id,onClose,onFilter,onPlayAll}) => {
   <div className="relative w-full max-w-2xl bg-[#161616] border-4 border-white hard-r body my-auto" onClick=${e=>e.stopPropagation()}>
    <button onClick=${onClose} className="absolute -top-3 -right-3 bg-[#e63946] text-white border-4 border-black p-1"><${Ic} d=${I.x}/></button>
    <div className="p-5 grain" style=${{background:`linear-gradient(120deg,hsl(${s.hue} 70% 25%),#111)`}}>
-    ${s.nick && html`<div className="marker text-[#f1c40f] text-xl">"${s.nick}"</div>`}
+    <div className="marker text-[#f1c40f] text-xl">"${s.nick||'?'}"</div>
     <div className="anton text-6xl uppercase leading-none" style=${{textShadow:'4px 4px 0 #000'}}>${s.name}</div>
-    <div className="text-sm mt-1">${[s.stance,s.years&&s.years+' años rodando',s.spot].filter(Boolean).join(' · ')}</div>
+    <div className="text-sm mt-1">${[s.stance||'?',(s.years||'?')+' años rodando',s.spot||'?'].join(' · ')}</div>
     ${s.ig && html`<a href=${s.ig} target="_blank" rel="noopener noreferrer" className="inline-block mt-2 text-xs font-black bg-white text-black px-2 py-1 border-2 border-black">SU INSTAGRAM ↗</a>`}
    </div>
-   ${(s.favs.length>0||Object.keys(s.setup).length>0) && html`<div className="p-5 grid md:grid-cols-2 gap-5">
+   <div className="p-5 grid md:grid-cols-2 gap-5">
     <div>
      <div className="anton uppercase text-[#f1c40f] text-lg mb-2">TRUCOS FAVORITOS</div>
-     <ul className="space-y-1">${s.favs.map(f=>html`<li key=${f} className="border-l-4 border-[#e63946] pl-2 font-bold text-sm">${f}</li>`)}</ul>
+     <ul className="space-y-1">${s.favs.length===0 && html`<li className="font-bold text-sm text-gray-400">?</li>`}${s.favs.map(f=>html`<li key=${f} className="border-l-4 border-[#e63946] pl-2 font-bold text-sm">${f}</li>`)}</ul>
     </div>
     <div>
      <div className="anton uppercase text-[#f1c40f] text-lg mb-2">SETUP</div>
-     <dl className="text-sm space-y-1">${Object.entries(s.setup).map(([k,v])=>html`<div key=${k} className="flex justify-between border-b border-[#333]"><dt className="uppercase text-gray-400">${k}</dt><dd className="font-bold">${v}</dd></div>`)}</dl>
+     <dl className="text-sm space-y-1">${['deck','trucks','wheels','bearings'].map(k=>[k,s.setup[k]||'?']).map(([k,v])=>html`<div key=${k} className="flex justify-between border-b border-[#333]"><dt className="uppercase text-gray-400">${k}</dt><dd className="font-bold">${v}</dd></div>`)}</dl>
     </div>
-   </div>`}
+   </div>
    <div className="px-5 pb-5">
     <div className="anton uppercase text-[#f1c40f] text-lg mb-2">EDITS (${vids.length})</div>
     ${vids.length===0 && html`<p className="text-sm text-gray-400 mb-4">Todavía no hay edits de ${s.name}. Mira sus highlights en las stories de arriba.</p>`}
@@ -518,7 +518,7 @@ const App = () => {
  const [shown,setShown] = useState(12);
  const list = useMemo(()=>VIDEOS.filter(v=>(filter==='all'||v.sk===filter)&&(tipo==='all'||v.tipo===tipo)&&(!filmer||v.filmer===filmer)),[filter,tipo,filmer]);
  const tipoCounts = useMemo(()=>{const base=VIDEOS.filter(v=>(filter==='all'||v.sk===filter)&&(!filmer||v.filmer===filmer));const c={all:base.length};TIPOS.forEach(t=>{c[t]=base.filter(v=>v.tipo===t).length});return c},[filter,filmer]);
- const pickFilter = f => {setFilter(f);setShown(12)};
+ const pickFilter = f => {setFilter(f);setFilmer('');setShown(12)};
  const pickTipo = t => {setTipo(t);setShown(12)};
  const active = VIDEOS.find(v=>v.id===activeId);
  const likes = v => v.likes + (liked[v.id]?1:0);

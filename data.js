@@ -6,21 +6,22 @@
      2) Agrega una línea en su lista 'clips' (la 'f' es el nombre sin extensión)
      tipo: RAILS · LEDGES · ESCALERAS · BAJADAS · LÍNEAS · SESIONES
      by: quien graba (si sale en el clip) · tags: cuentas etiquetadas · fit:'contain' para clips cuadrados
+   DATOS QUE NO SE SABEN (nick, stance, years, spot, favs, setup): déjalos vacíos y la página muestra '?'.
    AGREGAR UN SKATER NUEVO: copia un bloque de 'skaters' y cambia id, name, ig y clips.
    ============================================================ */
 window.CREW = {
 
   skaters: [
-    {"id": "raspu", "name": "Raspu", "ig": "https://www.instagram.com/juancamolina23/", "nick": "EL PÁJARO", "stance": "Regular", "years": 9, "spot": "Skatepark Los Ángeles, Ricardo Vicuña", "hue": 350, "favs": ["Kickflip back lip", "Frontside 180 nollie", "Tre flip"], "setup": {"deck": "8.25\" Maple 7-ply", "trucks": "Independent 149", "wheels": "54mm 99A", "bearings": "Bones Reds"},
+    {"id": "raspu", "name": "Raspu", "ig": "https://www.instagram.com/juancamolina23/", "nick": "", "stance": "", "years": "", "spot": "", "hue": 350, "favs": [], "setup": {},
       "clips": []},
-    {"id": "boris", "name": "Boris", "ig": "https://www.instagram.com/borisgaticarojas/", "nick": "EL ZORRO", "stance": "Goofy", "years": 6, "spot": "Parque Ecuador", "hue": 45, "favs": ["Backside tailslide", "Varial flip", "Manual a nollie"], "setup": {"deck": "8.0\" Maple 7-ply", "trucks": "Thunder 147", "wheels": "52mm 101A", "bearings": "Swiss"},
+    {"id": "boris", "name": "Boris", "ig": "https://www.instagram.com/borisgaticarojas/", "nick": "", "stance": "", "years": "", "spot": "", "hue": 45, "favs": [], "setup": {},
       "clips": [
         {"f": "boris-1", "short": "SLIDE", "title": "SLIDE EN EL LEDGE", "spot": "Skatepark · de noche", "dur": "0:08", "tipo": "LEDGES"},
         {"f": "boris-2", "short": "FLIP", "title": "FLIP SOBRE EL LEDGE", "spot": "Skatepark · de noche", "dur": "0:04", "tipo": "LEDGES", "tags": "@tourpizza.la @lostangelesteam"},
         {"f": "boris-3", "short": "GRIND", "title": "GRIND EN EL LEDGE", "spot": "Skatepark · de noche", "dur": "0:08", "tipo": "LEDGES"},
         {"f": "boris-4", "short": "LEDGE", "title": "TRUCOS EN EL LEDGE", "spot": "Skatepark · atardecer y noche", "dur": "0:15", "tipo": "LEDGES"}
       ]},
-    {"id": "droppa", "name": "Droppa", "ig": "https://www.instagram.com/dr0pp4/", "hl": "https://www.instagram.com/stories/highlights/18050739551253964/", "nick": "HUESOS", "stance": "Regular", "years": 12, "spot": "Costanera Sur", "hue": 200, "favs": ["Hardflip", "Switch bs 180", "Noseslide largo"], "setup": {"deck": "8.5\" Maple 8-ply", "trucks": "Venture 5.6", "wheels": "56mm 99A", "bearings": "Bronson G3"},
+    {"id": "droppa", "name": "Droppa", "ig": "https://www.instagram.com/dr0pp4/", "hl": "https://www.instagram.com/stories/highlights/18050739551253964/", "nick": "", "stance": "", "years": "", "spot": "", "hue": 200, "favs": [], "setup": {},
       "clips": [
         {"f": "droppa-1", "short": "OLLIE", "title": "OLLIE DE NOCHE", "spot": "Skatepark · de noche", "dur": "0:06", "tipo": "LÍNEAS"},
         {"f": "droppa-2", "short": "RAIL SLIDE", "title": "SLIDE EN EL RAIL DEL BANK", "spot": "Skatepark · de día", "dur": "0:11", "tipo": "RAILS", "by": "@coke_san_martin"},
@@ -29,7 +30,7 @@ window.CREW = {
         {"f": "droppa-5", "short": "FLIP + GRIND", "title": "FLIP Y GRIND EN EL BOWL", "spot": "Skatepark · de día", "dur": "0:15", "tipo": "LEDGES", "by": "@coke_san_martin"},
         {"f": "droppa-6", "short": "RAIL", "title": "GRIND LARGO EN EL RAIL", "spot": "Skatepark · de noche", "dur": "0:10", "tipo": "RAILS"}
       ]},
-    {"id": "diego", "name": "Diego", "ig": "https://www.instagram.com/_diego.skt/", "nick": "EL TIGRE", "stance": "Goofy", "years": 4, "spot": "Skatepark Los Ángeles, Ricardo Vicuña", "hue": 280, "favs": ["Fs boardslide", "Ollie al gap", "Bs bigspin"], "setup": {"deck": "7.875\" Maple 7-ply", "trucks": "Independent 139", "wheels": "53mm 100A", "bearings": "Bones Swiss"},
+    {"id": "diego", "name": "Diego", "ig": "https://www.instagram.com/_diego.skt/", "nick": "", "stance": "", "years": "", "spot": "", "hue": 280, "favs": [], "setup": {},
       "clips": [
         {"f": "diego-1", "short": "ESCALERAS", "title": "BAJANDO LAS ESCALERAS", "spot": "Escaleras frente a un Santander", "dur": "0:06", "tipo": "ESCALERAS", "by": "@sktvchile"},
         {"f": "diego-2", "short": "CAÍDA", "title": "DE NUEVO ME GANÓ EL SPOT", "spot": "Escalones en una plaza", "dur": "0:03", "tipo": "ESCALERAS"},
